@@ -1,4 +1,4 @@
-from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 
 metadata = MetaData()
 
@@ -8,7 +8,7 @@ users = Table(
     Column('login', String(50), nullable=False),
     Column('password', String(50), nullable=False),
     Column('email', String(50), nullable=False),
-    Column('admin_flag', Integer, nullable=False),  # >0 - admin users
+    Column('admin', Boolean, nullable=False),
 )
 
 topics = Table(
