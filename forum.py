@@ -9,6 +9,8 @@ from databases import Database
 
 from middlewares import setup_middlewares
 
+import tables
+
 
 def get_env_bool(name: str, default=False) -> bool:
     TRUE_STR = {'1', 'yes', 'true'}
@@ -38,10 +40,20 @@ def setup_database(app: Sanic):
         await app.db.disconnect()
 
 
-async def test(request):
-    return json({"hello": "world"})
-
 sanic_app = create_sanic_app('forum_api')
+
+
+async def test(request):
+    # query = tables.books.insert()
+    # values = [
+    #     {"title": "No Highway", "author": "Nevil Shute"},
+    #     {"title": "The Daffodil", "author": "SkyH. E. Bates"},
+    # ]
+    # await sanic_app.db.execute_many(query, values)
+
+    query = tables.books.select()
+    rows = await sanic_app.db.fetch_all(query)
+    return json({'books': [{row['title']: row['author']} for row in rows]})
 
 if __name__ == "__main__":
     setup_database(sanic_app)
