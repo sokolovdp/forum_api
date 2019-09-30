@@ -1,38 +1,34 @@
-import sqlalchemy as sa
+from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey
 
-metadata = sa.MetaData()
+metadata = MetaData()
 
-topics = sa.Table(
-    'topic',
-    metadata,
-    sa.Column('id', sa.Integer, primary_key=True),
-    sa.Column('subject', sa.String(length=256), unique=True, nullable=False),
-    sa.Column('description', sa.Text()),
-    sa.Column('created', sa.DateTime()),
-    sa.Column('modified', sa.DateTime()),
+topics = Table(
+    'topics', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('subject', String(length=256), unique=True, nullable=False),
+    Column('description', Text()),
+    Column('created', DateTime()),
+    Column('modified', DateTime()),
 )
 
-posts = sa.Table(
-    'post',
-    metadata,
-    sa.Column('id', sa.Integer, primary_key=True),
-    sa.Column('subject', sa.String(length=256), unique=True, nullable=False),
-    sa.Column('description', sa.Text(), nullable=False),
-    sa.Column('created', sa.DateTime(), nullable=False),
-    sa.Column('modified', sa.DateTime(), nullable=False),
-    sa.Column('topic_id', sa.Integer, sa.ForeignKey('topic.id', ondelete="DELETE"), nullable=False),
+posts = Table(
+    'posts', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('subject', String(length=256), unique=True, nullable=False),
+    Column('description', Text(), nullable=False),
+    Column('created', DateTime(), nullable=False),
+    Column('modified', DateTime(), nullable=False),
+    Column('topic_id', Integer, ForeignKey('topics.id', ondelete="DELETE"), nullable=False),
 )
 
-comments = sa.Table(
-    'comment',
-    metadata,
-    sa.Column('id', sa.Integer, primary_key=True),
-    sa.Column('text', sa.Text(), nullable=False),
-    sa.Column('created', sa.DateTime()),
-    sa.Column('post_id', sa.Integer, sa.ForeignKey('post.id', ondelete="DELETE"), nullable=False),
-    sa.Column('comment_id', sa.Integer, sa.ForeignKey('comment.id', ondelete="DELETE"), nullable=True),
+comments = Table(
+    'comment', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('text', Text(), nullable=False),
+    Column('created', DateTime()),
+    Column('post_id', Integer, ForeignKey('posts.id', ondelete="DELETE"), nullable=False),
+    Column('comment_id', Integer, ForeignKey('comment.id', ondelete="DELETE"), nullable=True),
 )
-
 
 # Executing many
 # query = books.insert()
