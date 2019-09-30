@@ -2,6 +2,14 @@ from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime,
 
 metadata = MetaData()
 
+users = Table(
+    'users', metadata,
+    Column('id', Integer, primary_key=True),
+    Column('login', String(50), nullable=False),
+    Column('password', String(50), nullable=False),
+    Column('email', String(50), nullable=False)
+)
+
 topics = Table(
     'topics', metadata,
     Column('id', Integer, primary_key=True),
@@ -9,6 +17,7 @@ topics = Table(
     Column('description', Text()),
     Column('created', DateTime()),
     Column('modified', DateTime()),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="DELETE"), nullable=False),
 )
 
 posts = Table(
@@ -19,6 +28,7 @@ posts = Table(
     Column('created', DateTime(), nullable=False),
     Column('modified', DateTime(), nullable=False),
     Column('topic_id', Integer, ForeignKey('topics.id', ondelete="DELETE"), nullable=False),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="DELETE"), nullable=False),
 )
 
 comments = Table(
@@ -27,7 +37,8 @@ comments = Table(
     Column('text', Text(), nullable=False),
     Column('created', DateTime()),
     Column('post_id', Integer, ForeignKey('posts.id', ondelete="DELETE"), nullable=False),
-    Column('comment_id', Integer, ForeignKey('comment.id', ondelete="DELETE"), nullable=True),
+    Column('comment_id', Integer, ForeignKey('comments.id', ondelete="DELETE"), nullable=True),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="DELETE"), nullable=False),
 )
 
 # Executing many
