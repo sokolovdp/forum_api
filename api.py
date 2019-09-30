@@ -1,6 +1,7 @@
 from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json, text
+from sqlalchemy_paginator import Paginator
 from tables import users, topics, posts, comments
 
 
