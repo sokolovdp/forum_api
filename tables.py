@@ -18,7 +18,7 @@ topics = Table(
     Column('description', Text()),
     Column('created', DateTime()),
     Column('modified', DateTime()),
-    Column('user_id', Integer, ForeignKey('users.id', ondelete="DELETE"), nullable=False),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False),
 )
 
 posts = Table(
@@ -28,18 +28,18 @@ posts = Table(
     Column('description', Text(), nullable=False),
     Column('created', DateTime(), nullable=False),
     Column('modified', DateTime(), nullable=False),
-    Column('topic_id', Integer, ForeignKey('topics.id', ondelete="DELETE"), nullable=False),
-    Column('user_id', Integer, ForeignKey('users.id', ondelete="DELETE"), nullable=False),
+    Column('topic_id', Integer, ForeignKey('topics.id', ondelete="CASCADE"), nullable=False),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False),
 )
 
 comments = Table(
-    'comment', metadata,
+    'comments', metadata,
     Column('id', Integer, primary_key=True),
     Column('text', Text(), nullable=False),
     Column('created', DateTime()),
-    Column('post_id', Integer, ForeignKey('posts.id', ondelete="DELETE"), nullable=False),
-    Column('comment_id', Integer, ForeignKey('comments.id', ondelete="DELETE"), nullable=True),
-    Column('user_id', Integer, ForeignKey('users.id', ondelete="DELETE"), nullable=False),
+    Column('post_id', Integer, ForeignKey('posts.id', ondelete="CASCADE"), nullable=False),
+    Column('comment_id', Integer, ForeignKey('comments.id', ondelete="CASCADE"), nullable=True),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False),
 )
 
 # Executing many
