@@ -7,7 +7,8 @@ users = Table(
     Column('id', Integer, primary_key=True),
     Column('login', String(50), nullable=False),
     Column('password', String(50), nullable=False),
-    Column('email', String(50), nullable=False)
+    Column('email', String(50), nullable=False),
+    Column('admin_flag', Integer, nullable=False),  # >0 - admin users
 )
 
 topics = Table(
