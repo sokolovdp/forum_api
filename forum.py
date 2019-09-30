@@ -28,11 +28,11 @@ def setup_database(app: Sanic):
     app.db = Database(db_url)
 
     @app.listener('after_server_start')
-    async def connect_to_db():
+    async def connect_to_db(*args):
         await app.db.connect()
 
     @app.listener('after_server_stop')
-    async def disconnect_from_db():
+    async def disconnect_from_db(*args):
         await app.db.disconnect()
 
 

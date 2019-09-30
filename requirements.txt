@@ -1,3 +1,4 @@
+secure
 aiofiles==0.4.0
 asyncpg==0.18.3
 certifi==2019.9.11
