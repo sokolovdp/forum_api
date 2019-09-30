@@ -13,11 +13,11 @@ import tables
 
 
 def get_env_bool(name: str, default=False) -> bool:
-    TRUE_STR = {'1', 'yes', 'true'}
+    true_str = {'1', 'yes', 'true'}
     var = os.environ.get(name, None)
     if var is None:
         return default
-    return var.lower() in TRUE_STR
+    return var.lower() in true_str
 
 
 def create_sanic_app(name: str, **kwargs: Any) -> Sanic:
