@@ -2,11 +2,11 @@ import sqlalchemy as sa
 
 metadata = sa.MetaData()
 
-sections = sa.Table(
-    'section',
+topics = sa.Table(
+    'topic',
     metadata,
     sa.Column('id', sa.Integer, primary_key=True),
-    sa.Column('subject', sa.String(length=512)),
+    sa.Column('subject', sa.String(length=256), unique=True, nullable=False),
     sa.Column('description', sa.Text()),
     sa.Column('created', sa.DateTime()),
     sa.Column('modified', sa.DateTime()),
@@ -16,23 +16,22 @@ posts = sa.Table(
     'post',
     metadata,
     sa.Column('id', sa.Integer, primary_key=True),
-    sa.Column('subject', sa.String(length=512)),
-    sa.Column('description', sa.Text()),
-    sa.Column('created', sa.DateTime()),
-    sa.Column('modified', sa.DateTime()),
+    sa.Column('subject', sa.String(length=256), unique=True, nullable=False),
+    sa.Column('description', sa.Text(), nullable=False),
+    sa.Column('created', sa.DateTime(), nullable=False),
+    sa.Column('modified', sa.DateTime(), nullable=False),
+    sa.Column('topic_id', sa.Integer, sa.ForeignKey('topic.id', ondelete="DELETE"), nullable=False),
 )
 
 comments = sa.Table(
     'comment',
     metadata,
     sa.Column('id', sa.Integer, primary_key=True),
-    sa.Column('description', sa.Text()),
+    sa.Column('text', sa.Text(), nullable=False),
     sa.Column('created', sa.DateTime()),
-    sa.Column('modified', sa.DateTime()),
+    sa.Column('post_id', sa.Integer, sa.ForeignKey('post.id', ondelete="DELETE"), nullable=False),
+    sa.Column('comment_id', sa.Integer, sa.ForeignKey('comment.id', ondelete="DELETE"), nullable=True),
 )
-
-
-
 
 
 # Executing many
