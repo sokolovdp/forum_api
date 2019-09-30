@@ -6,6 +6,34 @@ from sanic.response import json
 from sanic.log import logger
 from databases import Database
 
+from sqlalchemy import create_engine
+from sqlalchemy.engine.url import URL
+
+
+def get_env_bool(name: str, default=False) -> bool:
+    TRUE_STR = {'1', 'yes', 'true'}
+    var = os.environ.get(name, None)
+    if var is None:
+        return default
+    return var.lower() in TRUE_STR
+
+
+def get_engine_url():
+    return URL(
+        os.environ.get('SQLALCHEMY_DRIVERNAME', 'postgresql+psycopg2'),
+        username=os.environ.get('DATABASE_USERNAME'),
+        password=os.environ.get('DATABASE_PASSWORD'),
+        host=os.environ.get('DATABASE_HOST'),
+        port=os.environ.get('DATABASE_PORT'),
+        database=os.environ.get('DATABASE_NAME')
+    )
+
+
+def get_engine(**kwargs):
+    kwargs['echo'] = get_env_bool('SQLALCHEMY_ECHO')
+    kwargs['convert_unicode'] = True
+    return create_engine(get_engine_url(), **kwargs)
+
 
 def create_sanic_app(name: str, **kwargs: Any) -> Sanic:
     """
