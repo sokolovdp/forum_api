@@ -38,7 +38,6 @@ async def create_comment(request):
     return text('Create comment')
 
 
-
 def setup_routes(app: Sanic):
     app.add_route(AsyncTopicView.as_view(), '/topic')
     app.add_route(AsyncPostView.as_view(), '/post')
