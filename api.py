@@ -131,7 +131,12 @@ async def create_comment(request):
     return text('Create comment')
 
 
+async def list_comments(request, topic_id, post_id):
+    return text('list comments')
+
+
 def setup_routes(app: Sanic):
     app.add_route(AsyncTopicView.as_view(), '/topic/<topic_id>')
-    app.add_route(AsyncPostView.as_view(), '/post/<post_id>')
-    app.add_route(create_comment, '/comment', methods=['POST', 'GET'])
+    app.add_route(AsyncPostView.as_view(), '/topic/<topic_id>/post/<post_id>')
+    app.add_route(create_comment, '/comment/<comment_id>', methods=['POST', ])
+    app.add_route(list_comments, '/topic/<topic_id>/post/<post_id>/comments', methods=['GET', ])
