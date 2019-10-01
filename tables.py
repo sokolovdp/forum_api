@@ -1,4 +1,8 @@
+import os
+
+from sanic import Sanic
 from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
+from databases import Database
 
 metadata = MetaData()
 
@@ -49,3 +53,16 @@ tables_map = {
     'comments': comments,
     'users': users
 }
+
+
+def setup_database(app: Sanic):
+    db_url = os.environ.get('DATABASE_URL')
+    app.db = Database(db_url)
+
+    @app.listener('after_server_start')
+    async def connect_to_db(*args):
+        await app.db.connect()
+
+    @app.listener('after_server_stop')
+    async def disconnect_from_db(*args):
+        await app.db.disconnect()
