@@ -16,8 +16,9 @@ class AsyncTopicView(HTTPMethodView):
 
     async def get(self, request, topic_id):
         try:
-            if int(topic_id):
-                query = topics.select().where(topics.c.id == int(topic_id))
+            topic_id = int(topic_id)
+            if topic_id:
+                query = topics.select().where(topics.c.id == topic_id)
                 row = await request.app.db.fetch_one(query)
                 rows = [row, ]
             else:
