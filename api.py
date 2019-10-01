@@ -9,10 +9,12 @@ from tables import users, topics, posts, comments
 
 
 def row2dict(row: dict, keys: list) -> dict:
+    """ Convert row object into dict with str keys"""
     return {str(key): row.get(key) for key in keys}
 
 
 def cut_keys(dict_list: dict) -> dict:
+    """ Remove from key 'table.field' name of the table"""
     return {key.split('.')[1]: value for key, value in dict_list.items()}
 
 
