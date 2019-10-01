@@ -3,9 +3,25 @@ from datetime import datetime
 from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json
+
 from python_paginate.web.sanic_paginate import Pagination
 
 from tables import users, topics, posts, comments, tables_map
+
+
+def get_pagination_args(request) -> tuple:
+    per_page = request.args.get('per_page')
+    try:
+        per_page = int(per_page)
+    except (ValueError, TypeError):
+        return None, None
+    page = request.args.get('page')
+    try:
+        page = int(page)
+    except (ValueError, TypeError):
+        return None, None
+
+    return per_page,  per_page * (page - 1)
 
 
 def row2dict(row: dict, keys: list) -> dict:
@@ -34,7 +50,10 @@ class AsyncTopicView(HTTPMethodView):
                 rows = await request.app.db.fetch_all(query)
                 data = [row2dict(r, topics.columns) for r in rows]
             else:
+                per_page, offset = get_pagination_args(request)
                 query = topics.select().order_by('created')
+                if per_page:
+                    query = query.limit(per_page).offset(offset)
                 rows = await request.app.db.fetch_all(query)
                 data = [row2dict(r, topics.columns) for r in rows]
         except Exception as e:
@@ -108,7 +127,10 @@ class AsyncPostView(HTTPMethodView):
                     if rows:
                         data['comments'] = [cut_keys(row2dict(r, comments.columns)) for r in rows]
             else:
+                per_page, offset = get_pagination_args(request)
                 query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
+                if per_page:
+                    query = query.limit(per_page).offset(offset)
                 rows = await request.app.db.fetch_all(query)
                 data = {'posts': [cut_keys(row2dict(r, posts.columns)) for r in rows]}
         except Exception as e:
