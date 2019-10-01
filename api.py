@@ -4,9 +4,7 @@ from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json
 
-from python_paginate.web.sanic_paginate import Pagination
-
-from tables import users, topics, posts, comments, tables_map
+from tables import topics, posts, comments, tables_map  # users,
 
 
 def get_pagination_args(request) -> tuple:
@@ -75,7 +73,7 @@ class AsyncTopicView(HTTPMethodView):
                 'description': request.json.get('description'),
                 'created': datetime.now(),
                 'modified': datetime.now(),
-                'user_id': 1,  # get from request.session
+                'user_id': 1,  # get from request.session.user
             }
             await request.app.db.execute(query, values)
         except Exception as e:
@@ -147,7 +145,7 @@ class AsyncPostView(HTTPMethodView):
                 'topic_id': int(topic_id),
                 'created': datetime.now(),
                 'modified': datetime.now(),
-                'user_id': 1,  # get from request.session
+                'user_id': 1,  # get from request.session.user
             }
             await request.app.db.execute(query, values)
         except Exception as e:
@@ -190,7 +188,7 @@ async def create_comment(request):
             'topic_id': request.json.get('topic_id'),
             'post_id': request.json.get('post_id'),
             'created': datetime.now(),
-            'user_id': 1,  # get from request.session
+            'user_id': 1,  # get from request.session.user
         }
         await request.app.db.execute(query, values)
     except Exception as e:
