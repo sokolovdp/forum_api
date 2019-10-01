@@ -99,14 +99,15 @@ class AsyncPostView(HTTPMethodView):
                     .order_by('created').order_by('comment_id')
                 rows = await request.app.db.fetch_all(query)
                 data = [row2dict(r, posts.columns + comments.columns) for r in rows]
+
             else:
                 query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
                 rows = await request.app.db.fetch_all(query)
-                data = [row2dict(r, posts.columns) for r in rows]
+                data = [cut_keys(row2dict(r, posts.columns)) for r in rows]
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({'data': data})
+            return json({'posts': data})
 
     async def post(self, request, topic_id, post_id):
         try:
@@ -165,7 +166,7 @@ class AsyncCommentView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({'data': [row2dict(r, comments.columns) for r in rows]})
+            return json({'comments': [cut_keys(row2dict(r, comments.columns)) for r in rows]})
 
     async def post(self, request, topic_id, post_id):
         try:
