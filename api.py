@@ -159,41 +159,25 @@ class AsyncPostView(HTTPMethodView):
             return json({})
 
 
-class AsyncCommentView(HTTPMethodView):
-
-    async def get(self, request, topic_id, post_id):
-        try:
-            query = comments.select().where(
-                and_(
-                    comments.c.topic_id == int(topic_id),
-                    comments.c.post_id == int(post_id),
-                )
-            ).order_by('created').order_by('comment_id')
-            rows = await request.app.db.fetch_all(query)
-        except Exception as e:
-            return json({'error': str(e)}, status=400)
-        else:
-            return json({'comments': [cut_keys(row2dict(r, comments.columns)) for r in rows]})
-
-    async def post(self, request, topic_id, post_id):
-        try:
-            query = comments.insert()
-            values = {
-                'text': request.json.get('text'),
-                'comment_id': request.json.get('comment_id'),
-                'topic_id': int(topic_id),
-                'post_id': int(post_id),
-                'created': datetime.now(),
-                'user_id': 1,  # get from request.session
-            }
-            await request.app.db.execute(query, values)
-        except Exception as e:
-            return json({'error': str(e)}, status=400)
-        else:
-            return json({})
+async def create_comment(request):
+    try:
+        query = comments.insert()
+        values = {
+            'text': request.json.get('text'),
+            'comment_id': request.json.get('comment_id'),
+            'topic_id': request.json.get('topic_id'),
+            'post_id': request.json.get('post_id'),
+            'created': datetime.now(),
+            'user_id': 1,  # get from request.session
+        }
+        await request.app.db.execute(query, values)
+    except Exception as e:
+        return json({'error': str(e)}, status=400)
+    else:
+        return json({})
 
 
 def setup_routes(app: Sanic):
     app.add_route(AsyncTopicView.as_view(), '/topic/<topic_id>')
     app.add_route(AsyncPostView.as_view(), '/topic/<topic_id>/post/<post_id>')
-    app.add_route(AsyncCommentView.as_view(), '/topic/<topic_id>/post/<post_id>/comment')
+    app.add_route(create_comment, '/comment', methods=['POST'])
