@@ -8,8 +8,12 @@ from sqlalchemy.sql import select, and_  # , or_, not_
 from tables import users, topics, posts, comments
 
 
-def row2dict(row, keys) -> dict:
-    return {key: row.get(key) for key in keys}
+def row2dict(row: dict, keys: list) -> dict:
+    return {str(key): row.get(key) for key in keys}
+
+
+def cut_keys(dict_list: dict) -> dict:
+    return {key.split('.')[1]: value for key, value in dict_list.items()}
 
 
 class AsyncTopicView(HTTPMethodView):
@@ -34,7 +38,7 @@ class AsyncTopicView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({'data': data})
+            return json({'topics': [cut_keys(d) for d in data]})
 
     async def post(self, request, topic_id):
         """
