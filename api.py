@@ -2,10 +2,9 @@ from datetime import datetime
 
 from sanic import Sanic
 from sanic.views import HTTPMethodView
-from sanic.response import json  # , text
-from sqlalchemy.sql import select, and_  # , or_, not_
+from sanic.response import json
 
-from tables import users, topics, posts, comments
+from tables import users, topics, posts, comments, tables_map
 
 
 def row2dict(row: dict, keys: list) -> dict:
@@ -177,7 +176,27 @@ async def create_comment(request):
         return json({})
 
 
+async def search_subject(request):
+    try:
+        args = list(request.args.keys())
+        if not args or args[0] not in ('posts', 'topics'):
+            raise ValueError('invalid table name, allowed names are: "posts" & "topics"')
+        table_name = args[0]
+        pattern = request.args.get(table_name)
+        if not pattern:
+            raise ValueError(f'no search pattern')
+        table = tables_map[table_name]
+        query = table.select().where(table.c.subject.ilike(f'%{pattern}%'))
+        rows = await request.app.db.fetch_all(query)
+        data = [cut_keys(row2dict(r, table.columns)) for r in rows]
+    except Exception as e:
+        return json({'error': str(e)}, status=400)
+    else:
+        return json(data)
+
+
 def setup_routes(app: Sanic):
     app.add_route(AsyncTopicView.as_view(), '/topic/<topic_id>')
     app.add_route(AsyncPostView.as_view(), '/topic/<topic_id>/post/<post_id>')
     app.add_route(create_comment, '/comment', methods=['POST'])
+    app.add_route(search_subject, '/search', methods=['GET'])

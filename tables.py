@@ -42,3 +42,10 @@ comments = Table(
     Column('post_id', Integer, ForeignKey('posts.id', ondelete="CASCADE"), nullable=False),
     Column('comment_id', Integer, ForeignKey('comments.id', ondelete="CASCADE"), nullable=True),
 )
+
+tables_map = {
+    'posts': posts,
+    'topics': topics,
+    'comments': comments,
+    'users': users
+}
