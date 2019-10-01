@@ -15,7 +15,7 @@ class AsyncTopicView(HTTPMethodView):
     async def get(self, request, topic_id):
         try:
             if int(topic_id):
-                query = topics.select().where(users.c.id == int(topic_id))
+                query = topics.select().where(topics.c.id == int(topic_id))
                 row = await request.app.db.fetch_one(query)
                 rows = [row, ]
             else:
@@ -70,17 +70,62 @@ class AsyncTopicView(HTTPMethodView):
 
 class AsyncPostView(HTTPMethodView):
 
-    async def get(self, request):
-        return text('I am get method')
+    async def get(self, request, post_id):
+        try:
+            if int(post_id):
+                query = posts.select().where(posts.c.id == int(post_id))
+                row = await request.app.db.fetch_one(query)
+                rows = [row, ]
+            else:
+                query = posts.select()
+                rows = await request.app.db.fetch_all(query)
+        except Exception as e:
+            return json({'error': str(e)}, status=400)
+        else:
+            return json({'data': [row2dict(r, posts.columns) for r in rows]})
 
-    async def post(self, request):
-        return text('I am post method')
+    async def post(self, request, post_id):
+        try:
+            query = topics.insert()
+            values = {
+                'subject': request.json.get('subject'),
+                'description': request.json.get('description'),
+                'topic_id': request.json.get('topic_id'),
+                'created': datetime.now(),
+                'modified': datetime.now(),
+                'user_id': 1,  # get from request.session
+            }
+            await request.app.db.execute(query, values)
+        except Exception as e:
+            return json({'error': str(e)}, status=400)
+        else:
+            return json({})
 
-    async def put(self, request):
-        return text('I am put method')
+    async def put(self, request, post_id):
+        try:
+            query = posts.update().where(posts.c.id == int(post_id))
+            values = {'modified': datetime.now(), }
+            descr = request.json.get('description')
+            subj = request.json.get('subject')
+            if descr:
+                values['description'] = descr
+            if subj:
+                values['subject'] = subj
+            await request.app.db.execute(query, values)
+        except Exception as e:
+            return json({'error': str(e)}, status=400)
+        else:
+            return json({})
 
-    async def delete(self, request):
-        return text('I am delete method')
+    async def delete(self, request, post_id):
+        try:
+            query = posts.delete().where(posts.c.id == int(post_id))
+            await request.app.db.execute(query)
+        except Exception as e:
+            return json({'error': str(e)}, status=400)
+        else:
+            return json({})
+
 
 
 async def create_comment(request):
