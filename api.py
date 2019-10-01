@@ -147,7 +147,7 @@ class AsyncCommentView(HTTPMethodView):
 
     async def post(self, request, topic_id, post_id):
         try:
-            query = posts.insert()
+            query = comments.insert()
             values = {
                 'text': request.json.get('text'),
                 'comment_id': request.json.get('comment_id'),
