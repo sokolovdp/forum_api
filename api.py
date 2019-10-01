@@ -86,7 +86,7 @@ class AsyncPostView(HTTPMethodView):
 
     async def post(self, request, post_id):
         try:
-            query = topics.insert()
+            query = posts.insert()
             values = {
                 'subject': request.json.get('subject'),
                 'description': request.json.get('description'),
@@ -125,7 +125,6 @@ class AsyncPostView(HTTPMethodView):
             return json({'error': str(e)}, status=400)
         else:
             return json({})
-
 
 
 async def create_comment(request):
