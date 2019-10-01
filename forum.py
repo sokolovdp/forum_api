@@ -34,10 +34,8 @@ def setup_database(app: Sanic):
         await app.db.disconnect()
 
 
-sanic_app = create_sanic_app('forum_api')
-
-
 if __name__ == "__main__":
+    sanic_app = create_sanic_app('forum_api')
     setup_database(sanic_app)
     setup_routes(sanic_app)
     setup_middlewares(sanic_app)
