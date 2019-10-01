@@ -1,15 +1,15 @@
-import os
-
-from sanic import Sanic
-
-from tables import setup_database
-from middlewares import setup_middlewares
-from api import setup_routes
+from forum import app
 
 
-if __name__ == "__main__":
-    app = Sanic('forum_api', strict_slashes=os.getenv('USE_STRICT_SLASHES', False))
-    setup_database(app)
-    setup_routes(app)
-    setup_middlewares(app)
-    app.run(host="0.0.0.0", port=8000, debug=True, access_log=True, auto_reload=False)
+def test_index_returns_200():
+    request, response = app.test_client.get('/topic/0')
+    assert response.status == 200
+
+
+def test_index_patch_not_allowed():
+    request, response = app.test_client.patch('/topic/0')
+    assert response.status == 405
+
+
+test_index_returns_200()
+# test_index_patch_not_allowed()
