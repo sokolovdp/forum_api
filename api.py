@@ -3,6 +3,7 @@ from datetime import datetime
 from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json
+from python_paginate.web.sanic_paginate import Pagination
 
 from tables import users, topics, posts, comments, tables_map
 
