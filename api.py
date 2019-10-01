@@ -186,7 +186,7 @@ async def search_subject(request):
         if not pattern:
             raise ValueError(f'no search pattern')
         table = tables_map[table_name]
-        query = table.select().where(table.c.subject.ilike(f'%{pattern}%'))
+        query = table.select().where(table.c.subject.ilike(f'%{pattern}%')).order_by('created')
         rows = await request.app.db.fetch_all(query)
         data = [cut_keys(row2dict(r, table.columns)) for r in rows]
     except Exception as e:
