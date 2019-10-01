@@ -1,8 +1,10 @@
-from _datetime import datetime
+from datetime import datetime
 
 from sanic import Sanic
 from sanic.views import HTTPMethodView
-from sanic.response import json, text
+from sanic.response import json  # , text
+from sqlalchemy.sql import and_  # , or_, not_
+
 from tables import users, topics, posts, comments
 
 
@@ -132,8 +134,10 @@ class AsyncCommentView(HTTPMethodView):
     async def get(self, request, topic_id, post_id):
         try:
             query = comments.select().where(
-                comments.c.topic_id == int(topic_id),
-                comments.c.post_id == int(post_id),
+                and_(
+                    comments.c.topic_id == int(topic_id),
+                    comments.c.post_id == int(post_id),
+                )
             )
             rows = await request.app.db.fetch_all(query)
         except Exception as e:
@@ -153,31 +157,6 @@ class AsyncCommentView(HTTPMethodView):
                 'user_id': 1,  # get from request.session
             }
             await request.app.db.execute(query, values)
-        except Exception as e:
-            return json({'error': str(e)}, status=400)
-        else:
-            return json({})
-
-    async def put(self, request, topic_id, post_id):
-        try:
-            query = posts.update().where(posts.c.id == int(post_id))
-            values = {'modified': datetime.now(), }
-            descr = request.json.get('description')
-            subj = request.json.get('subject')
-            if descr:
-                values['description'] = descr
-            if subj:
-                values['subject'] = subj
-            await request.app.db.execute(query, values)
-        except Exception as e:
-            return json({'error': str(e)}, status=400)
-        else:
-            return json({})
-
-    async def delete(self, request, post_id):
-        try:
-            query = posts.delete().where(posts.c.id == int(post_id))
-            await request.app.db.execute(query)
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
