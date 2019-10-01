@@ -91,7 +91,8 @@ class AsyncPostView(HTTPMethodView):
             topic_id = int(topic_id)
             post_id = int(post_id)
             if post_id:
-                query = select([posts, comments]).where(posts.c.id == post_id)
+                query = select([posts, comments]).where(posts.c.id == post_id)\
+                    .order_by('created').order_by('comment_id')
                 rows = await request.app.db.fetch_all(query)
                 data = [row2dict(r, posts.columns + comments.columns) for r in rows]
             else:
@@ -155,7 +156,7 @@ class AsyncCommentView(HTTPMethodView):
                     comments.c.topic_id == int(topic_id),
                     comments.c.post_id == int(post_id),
                 )
-            ).order_by('created')
+            ).order_by('created').order_by('comment_id')
             rows = await request.app.db.fetch_all(query)
         except Exception as e:
             return json({'error': str(e)}, status=400)
@@ -183,4 +184,4 @@ class AsyncCommentView(HTTPMethodView):
 def setup_routes(app: Sanic):
     app.add_route(AsyncTopicView.as_view(), '/topic/<topic_id>')
     app.add_route(AsyncPostView.as_view(), '/topic/<topic_id>/post/<post_id>')
-    app.add_route(AsyncCommentView.as_view(), 'topic/<topic_id>/post/<post_id>/comments')
+    app.add_route(AsyncCommentView.as_view(), '/topic/<topic_id>/post/<post_id>/comment')
