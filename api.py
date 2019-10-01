@@ -19,7 +19,7 @@ class AsyncTopicView(HTTPMethodView):
                 row = await request.app.db.fetch_one(query)
                 rows = [row, ]
             else:
-                query = topics.select()
+                query = topics.select().order_by('created')
                 rows = await request.app.db.fetch_all(query)
         except Exception as e:
             return json({'error': str(e)}, status=400)
@@ -77,7 +77,7 @@ class AsyncPostView(HTTPMethodView):
                 row = await request.app.db.fetch_one(query)
                 rows = [row, ]
             else:
-                query = posts.select().where(posts.c.topic_id == int(topic_id))
+                query = posts.select().where(posts.c.topic_id == int(topic_id)).order_by('created')
                 rows = await request.app.db.fetch_all(query)
         except Exception as e:
             return json({'error': str(e)}, status=400)
