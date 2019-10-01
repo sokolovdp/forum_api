@@ -169,7 +169,7 @@ class AsyncPostView(HTTPMethodView):
         else:
             return json({})
 
-    async def delete(self, request, topic_is, post_id):
+    async def delete(self, request, topic_id, post_id):
         try:
             query = posts.delete().where(posts.c.id == int(post_id))
             await request.app.db.execute(query)
