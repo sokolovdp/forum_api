@@ -138,7 +138,7 @@ class AsyncCommentView(HTTPMethodView):
                     comments.c.topic_id == int(topic_id),
                     comments.c.post_id == int(post_id),
                 )
-            )
+            ).order_by('created')
             rows = await request.app.db.fetch_all(query)
         except Exception as e:
             return json({'error': str(e)}, status=400)
