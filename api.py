@@ -15,12 +15,18 @@ def row2dict(row, keys) -> dict:
 class AsyncTopicView(HTTPMethodView):
 
     async def get(self, request, topic_id):
+        """
+        Retrieve all or one topic
+        :param request: sanic request object
+        :param topic_id: 0 - return all topics, otherwise - topic with given ID
+        :return:  list of dicts or dict with error
+        """
         try:
             topic_id = int(topic_id)
             if topic_id:
-                query = select([topics, posts]).where(topics.c.id == topic_id)
+                query = topics.select().where(topics.c.id == topic_id)
                 rows = await request.app.db.fetch_all(query)
-                data = [row2dict(r, topics.columns + posts.columns) for r in rows]
+                data = [row2dict(r, topics.columns) for r in rows]
             else:
                 query = topics.select().order_by('created')
                 rows = await request.app.db.fetch_all(query)
@@ -31,6 +37,12 @@ class AsyncTopicView(HTTPMethodView):
             return json({'data': data})
 
     async def post(self, request, topic_id):
+        """
+        Create topic
+        :param request: sanic request object
+        :param topic_id:  ignored
+        :return: empty dict or dict with error
+        """
         try:
             query = topics.insert()
             values = {
