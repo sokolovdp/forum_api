@@ -3,7 +3,7 @@ from datetime import datetime
 from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json  # , text
-from sqlalchemy.sql import and_  # , or_, not_
+from sqlalchemy.sql import select, and_  # , or_, not_
 
 from tables import users, topics, posts, comments
 
@@ -18,16 +18,17 @@ class AsyncTopicView(HTTPMethodView):
         try:
             topic_id = int(topic_id)
             if topic_id:
-                query = topics.select().where(topics.c.id == topic_id)
-                row = await request.app.db.fetch_one(query)
-                rows = [row, ]
+                query = select([topics, posts]).where(topics.c.id == topic_id)
+                rows = await request.app.db.fetch_all(query)
+                data = [row2dict(r, topics.columns + posts.columns) for r in rows]
             else:
                 query = topics.select().order_by('created')
                 rows = await request.app.db.fetch_all(query)
+                data = [row2dict(r, topics.columns) for r in rows]
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({'data': [row2dict(r, topics.columns) for r in rows]})
+            return json({'data': data})
 
     async def post(self, request, topic_id):
         try:
@@ -75,17 +76,20 @@ class AsyncPostView(HTTPMethodView):
 
     async def get(self, request, topic_id, post_id):
         try:
-            if int(post_id):
-                query = posts.select().where(posts.c.id == int(post_id))
-                row = await request.app.db.fetch_one(query)
-                rows = [row, ]
-            else:
-                query = posts.select().where(posts.c.topic_id == int(topic_id)).order_by('created')
+            topic_id = int(topic_id)
+            post_id = int(post_id)
+            if post_id:
+                query = select([posts, comments]).where(posts.c.id == post_id)
                 rows = await request.app.db.fetch_all(query)
+                data = [row2dict(r, posts.columns + comments.columns) for r in rows]
+            else:
+                query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
+                rows = await request.app.db.fetch_all(query)
+                data = [row2dict(r, posts.columns) for r in rows]
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({'data': [row2dict(r, posts.columns) for r in rows]})
+            return json({'data': data})
 
     async def post(self, request, topic_id, post_id):
         try:
