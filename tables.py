@@ -37,24 +37,8 @@ comments = Table(
     Column('id', Integer, primary_key=True),
     Column('text', Text(), nullable=False),
     Column('created', DateTime()),
+    Column('user_id', Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False),
+    Column('topic_id', Integer, ForeignKey('topics.id', ondelete="CASCADE"), nullable=False),
     Column('post_id', Integer, ForeignKey('posts.id', ondelete="CASCADE"), nullable=False),
     Column('comment_id', Integer, ForeignKey('comments.id', ondelete="CASCADE"), nullable=True),
-    Column('user_id', Integer, ForeignKey('users.id', ondelete="CASCADE"), nullable=False),
 )
-
-# Executing many
-# query = books.insert()
-# values = [
-#     {"title": "No Highway", "author": "Nevil Shute"},
-#     {"title": "The Daffodil", "author": "SkyH. E. Bates"},
-# ]
-# sanic_app.db.execute_many(query, values)
-
-
-# Fetching multiple rows
-# query = books.select()
-# rows = await sanic_app.db.fetch_all(query)
-
-# Fetch single row
-# query = books.select()
-# row = await sanic_app.db.fetch_one(query)
