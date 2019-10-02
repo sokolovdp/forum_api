@@ -48,10 +48,10 @@ class AutoRestTests(unittest.TestCase):
         global CREATED_COMMENT_ID
 
         data = {
-            "text": f"post 1 comment {N}",
+            "text": f"post {CREATED_POST_ID} comment {N}",
             "comment_id": None,
-            "topic_id": 1,
-            "post_id": 2
+            "topic_id": CREATED_TOPIC_ID,
+            "post_id": CREATED_POST_ID
         }
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
@@ -63,8 +63,8 @@ class AutoRestTests(unittest.TestCase):
         data = {
             "text": f"comment for comment {CREATED_COMMENT_ID}",
             "comment_id": CREATED_COMMENT_ID,
-            "topic_id": 1,
-            "post_id": 2
+            "topic_id": CREATED_TOPIC_ID,
+            "post_id": CREATED_POST_ID
         }
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
@@ -75,22 +75,26 @@ class AutoRestTests(unittest.TestCase):
         request, response = app.test_client.get('/topic/0')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
-        self.assertTrue(data.get('topics') is not None)
+        topic_list = data.get('topics')
+        self.assertTrue(topic_list is not None)
+        self.assertTrue(len(topic_list) > 0)
 
     def test_06_get_list_of_posts(self):
-        request, response = app.test_client.get('/topic/1/post/0')
+        request, response = app.test_client.get(f'/topic/{CREATED_TOPIC_ID}/post/0')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
-        self.assertTrue(data.get('posts') is not None)
+        post_list = data.get('posts')
+        self.assertTrue(post_list is not None)
+        self.assertTrue(len(post_list) > 0)
 
     def test_07_get_one_topic(self):
-        request, response = app.test_client.get('/topic/1')
+        request, response = app.test_client.get(f'/topic/{CREATED_TOPIC_ID}')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertEqual(len(data['topics']), 1)
 
     def test_08_get_one_post(self):
-        request, response = app.test_client.get('/topic/1/post/2')
+        request, response = app.test_client.get(f'/topic/{CREATED_TOPIC_ID}/post/{CREATED_POST_ID}')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertTrue(data.get('post') is not None)
@@ -98,18 +102,20 @@ class AutoRestTests(unittest.TestCase):
 
     def test_09_update_topic(self):
         data = {
-            "subject": f"topic modified",
+            "subject": f"topic modified {random.randint(0, 100_000_000)}",  # must be unique
             "description": f"topic modified"
         }
-        request, response = app.test_client.put('/topic/1', data=json.dumps(data))
+        request, response = app.test_client.put(f'/topic/{CREATED_TOPIC_ID}', data=json.dumps(data))
         self.assertEqual(response.status, 200)
 
     def test_10_update_post(self):
         data = {
-            "subject": f"post modified",
+            "subject": f"post modified {random.randint(0, 100_000_000)}",  # must be unique
             "description": f"post modified"
         }
-        request, response = app.test_client.put('/topic/1/post/2', data=json.dumps(data))
+        request, response = app.test_client.put(
+            f'/topic/{CREATED_TOPIC_ID}/post/{CREATED_POST_ID}', data=json.dumps(data)
+        )
         self.assertEqual(response.status, 200)
 
     def test_11_delete_post(self):  # check cascade
