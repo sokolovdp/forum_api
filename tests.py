@@ -6,6 +6,10 @@ from forum import app
 
 N = random.randint(1, 10000)
 
+CREATED_TOPIC_ID = None
+CREATED_POST_ID = None
+CREATED_COMMENT_ID = None
+
 
 class AutoRestTests(unittest.TestCase):
     """ Unit test cases for Forum Rest APIs  """
@@ -14,23 +18,34 @@ class AutoRestTests(unittest.TestCase):
         pass
 
     def test_create_topic(self):
+        global CREATED_TOPIC_ID
+
         data = {
             "subject": f"topic {N} subject",
             "description": f"topic {N} description"
         }
         request, response = app.test_client.post('/topic/0', data=json.dumps(data))
         self.assertEqual(response.status, 200)
-
+        data = json.loads(response.text)
+        CREATED_TOPIC_ID = int(data['id'])
+        print(f'created topic id = {CREATED_TOPIC_ID}')
 
     def test_create_post(self):
+        global CREATED_POST_ID
+
         data = {
             "subject": f"post {N} subject",
             "description": f"post {N} description"
         }
-        request, response = app.test_client.post('topic/1/post/0', data=json.dumps(data))
+        request, response = app.test_client.post(f'topic/{CREATED_TOPIC_ID}/post/0', data=json.dumps(data))
         self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        CREATED_POST_ID = int(data['id'])
+        print(f'created post id = {CREATED_POST_ID}')
 
     def test_create_comment(self):
+        global CREATED_COMMENT_ID
+
         data = {
             "text": f"post 1 comment {N}",
             "comment_id": None,
@@ -39,16 +54,21 @@ class AutoRestTests(unittest.TestCase):
         }
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        CREATED_COMMENT_ID = int(data['id'])
+        print(f'created comment id = {CREATED_COMMENT_ID}')
 
     def test_create_comment_for_comment(self):
         data = {
-            "text": f"comment for comment {N}",
-            "comment_id": 10,
+            "text": f"comment for comment {CREATED_COMMENT_ID}",
+            "comment_id": CREATED_COMMENT_ID,
             "topic_id": 1,
             "post_id": 2
         }
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        print(f'created comment for comment id = {int(data["id"])}')
 
     def test_get_list_of_topics(self):
         request, response = app.test_client.get('/topic/0')

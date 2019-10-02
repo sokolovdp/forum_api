@@ -86,7 +86,7 @@ class AsyncTopicView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({{'id': topic_id}})
+            return json({'id': topic_id})
 
     async def delete(self, request, topic_id):
         try:
