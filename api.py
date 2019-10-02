@@ -24,13 +24,12 @@ def get_pagination_args(request) -> tuple:
 
 
 def row2dict(row: dict, keys: list) -> dict:
-    """ Convert row object into dict with str keys"""
-    return {str(key): row.get(key) for key in keys}
+    """ Convert row object into dict with str keys, by striping table name"""
 
+    def strip_table_name_from_key(key) -> str:
+        return str(key).split('.', 1)[1]
 
-def cut_keys(dict_list: dict) -> dict:
-    """ Remove from key 'table.field' name of the table"""
-    return {key.split('.', 1)[1]: value for key, value in dict_list.items()}
+    return {strip_table_name_from_key(key): row.get(key) for key in keys}
 
 
 class AsyncTopicView(HTTPMethodView):
@@ -47,18 +46,17 @@ class AsyncTopicView(HTTPMethodView):
             if topic_id:
                 query = topics.select().where(topics.c.id == topic_id)
                 rows = await request.app.db.fetch_all(query)
-                data = [row2dict(r, topics.columns) for r in rows]
             else:
                 per_page, offset = get_pagination_args(request)
                 query = topics.select().order_by('created')
                 if per_page:
                     query = query.limit(per_page).offset(offset)
                 rows = await request.app.db.fetch_all(query)
-                data = [row2dict(r, topics.columns) for r in rows]
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({'topics': [cut_keys(d) for d in data]})
+            topics_data = [row2dict(r, topics.columns) for r in rows]
+            return json({'topics': topics_data})
 
     async def post(self, request, topic_id):
         """
@@ -119,19 +117,19 @@ class AsyncPostView(HTTPMethodView):
                 query = posts.select().where(posts.c.id == post_id)
                 row = await request.app.db.fetch_one(query)
                 if row:
-                    post_data = cut_keys(row2dict(row, posts.columns))
+                    post_data = row2dict(row, posts.columns)
                     data['post'] = post_data
                     query = comments.select().where(comments.c.post_id == post_id)
                     rows = await request.app.db.fetch_all(query)
                     if rows:
-                        data['comments'] = [cut_keys(row2dict(r, comments.columns)) for r in rows]
+                        data['comments'] = [row2dict(r, comments.columns) for r in rows]
             else:
                 per_page, offset = get_pagination_args(request)
                 query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
                 if per_page:
                     query = query.limit(per_page).offset(offset)
                 rows = await request.app.db.fetch_all(query)
-                data = {'posts': [cut_keys(row2dict(r, posts.columns)) for r in rows]}
+                data = {'posts': [row2dict(r, posts.columns) for r in rows]}
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
@@ -210,7 +208,7 @@ async def search_subject(request):
         table = getattr(tables, table_name)
         query = table.select().where(table.c.subject.ilike(f'%{pattern}%')).order_by('created')
         rows = await request.app.db.fetch_all(query)
-        data = [cut_keys(row2dict(r, table.columns)) for r in rows]
+        data = [row2dict(r, table.columns) for r in rows]
     except Exception as e:
         return json({'error': str(e)}, status=400)
     else:
