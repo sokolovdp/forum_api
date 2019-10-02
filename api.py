@@ -20,7 +20,7 @@ def get_pagination_args(request) -> tuple:
     except (ValueError, TypeError):
         return None, None
 
-    return per_page,  per_page * (page - 1)
+    return per_page, per_page * (page - 1)
 
 
 def row2dict(row: dict, keys: list) -> dict:
@@ -35,12 +35,6 @@ def row2dict(row: dict, keys: list) -> dict:
 class AsyncTopicView(HTTPMethodView):
 
     async def get(self, request, topic_id):
-        """
-        Retrieve all or one topic
-        :param request: sanic request object
-        :param topic_id: 0 - return all topics, otherwise - topic with given ID
-        :return:  list of dicts or dict with error
-        """
         try:
             topic_id = int(topic_id)
             if topic_id:
@@ -55,16 +49,9 @@ class AsyncTopicView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            topics_data = [row2dict(r, topics.columns) for r in rows]
-            return json({'topics': topics_data})
+            return json({'topics': [row2dict(r, topics.columns) for r in rows]})
 
     async def post(self, request, topic_id):
-        """
-        Create topic
-        :param request: sanic request object
-        :param topic_id:  ignored
-        :return: empty dict or dict with error
-        """
         try:
             query = topics.insert()
             values = {
@@ -208,11 +195,10 @@ async def search_subject(request):
         table = getattr(tables, table_name)
         query = table.select().where(table.c.subject.ilike(f'%{pattern}%')).order_by('created')
         rows = await request.app.db.fetch_all(query)
-        data = [row2dict(r, table.columns) for r in rows]
     except Exception as e:
         return json({'error': str(e)}, status=400)
     else:
-        return json(data)
+        return json([row2dict(r, table.columns) for r in rows])
 
 
 def setup_routes(app: Sanic):
