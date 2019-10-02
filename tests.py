@@ -1,15 +1,18 @@
+import json
+import unittest
+
 from forum import app
 
 
-def test_index_returns_200():
-    request, response = app.test_client.get('/topic/0')
-    assert response.status == 200
+class AutoRestTests(unittest.TestCase):
+    """ Unit test cases for Forum Rest APIs  """
+
+    def test_get_list_of_topics(self):
+        request, response = app.test_client.get('/topic/0')
+        self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        self.assertEqual(len(data['topics']), 2)
 
 
-def test_index_patch_not_allowed():
-    request, response = app.test_client.patch('/topic/0')
-    assert response.status == 405
-
-
-test_index_returns_200()
-test_index_patch_not_allowed()
+if __name__ == '__main__':
+    unittest.main()
