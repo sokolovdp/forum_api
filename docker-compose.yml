@@ -2,8 +2,14 @@ version: '3'
 
 services:
   db:
+    container_name: forum_postgres
+    restart: always
     image: postgres
+    ports:
+      - "5432:5432"
   api:
+    container_name: forum_api
+    restart: always
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db/postgres
     build: .
