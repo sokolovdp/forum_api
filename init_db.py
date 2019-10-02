@@ -20,7 +20,7 @@ if __name__ == '__main__':
         tables.comments.create(db_connection)
     except DBAPIError as db_error:
         if db_error.orig.pgcode == DUPLICATE_TABLE:
-            print('\nforum tables already exists!')
+            print('\nforum tables already exists!\n')
             exit(0)
         else:
             raise db_engine
