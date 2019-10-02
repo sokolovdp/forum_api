@@ -9,7 +9,7 @@ import tables
 if __name__ == '__main__':
     database_url = os.getenv('DATABASE_URL')
 
-    print(f'creating forum api tables, database={database_url} ...')
+    print(f'creating forum api tables, database url="{database_url}" ...')
 
     db_engine = create_engine(database_url, echo=True)
     db_connection = db_engine.connect()
@@ -20,7 +20,7 @@ if __name__ == '__main__':
         tables.comments.create(db_connection)
     except DBAPIError as db_error:
         if db_error.orig.pgcode == DUPLICATE_TABLE:
-            print('forum tables already exists!')
+            print('\nforum tables already exists!')
             exit(0)
         else:
             raise db_engine
@@ -41,4 +41,4 @@ if __name__ == '__main__':
         },
     ]
     db_connection.execute(query, values)
-    print('forum api tables created')
+    print('\nforum api tables created')
