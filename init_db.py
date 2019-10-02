@@ -3,8 +3,11 @@ from sqlalchemy import create_engine
 import tables
 
 if __name__ == '__main__':
-    db_engine = create_engine(os.getenv('DATABASE_URL'), echo=True)
+    database_url = os.getenv('DATABASE_URL')
+    db_engine = create_engine(database_url, echo=True)
     db_connection = db_engine.connect()
+
+    print(f'creating forum api tables, database={database_url}')
 
     tables.users.create(db_connection)
     tables.topics.create(db_connection)
