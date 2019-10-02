@@ -2,8 +2,6 @@ import json
 import unittest
 import random
 
-from sanic.log import logger
-
 from forum import app
 
 
@@ -26,7 +24,6 @@ class ForumTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.__class__.CREATED_TOPIC_ID = int(data['id'])
-        logger.info(f'created topic id = {self.__class__.CREATED_TOPIC_ID}')
 
     def test_02_create_post(self):
         data = {
@@ -39,7 +36,6 @@ class ForumTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.__class__.CREATED_POST_ID = int(data['id'])
-        logger.info(f'created post id = {self.__class__.CREATED_POST_ID}')
 
     def test_03_create_comment(self):
         data = {
@@ -52,7 +48,6 @@ class ForumTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.__class__.CREATED_COMMENT_ID = int(data['id'])
-        logger.info(f'created comment id = {self.__class__.CREATED_COMMENT_ID}')
 
     def test_04_create_comment_for_comment(self):
         data = {
@@ -64,7 +59,6 @@ class ForumTests(unittest.TestCase):
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
-        logger.info(f'created comment for comment id = {int(data["id"])}')
 
     def test_05_get_list_of_topics(self):
         request, response = app.test_client.get('/topic/0')
