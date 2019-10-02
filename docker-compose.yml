@@ -5,13 +5,11 @@ services:
     container_name: forum_postgres
     restart: always
     image: postgres
-    ports:
-      - "5432:5432"
   api:
     container_name: forum_api
     restart: always
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db/postgres
+      - DATABASE_URL=postgresql://postgres:@db/postgres
     build: .
     command: python3 forum.py
     volumes:
