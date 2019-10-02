@@ -119,11 +119,13 @@ class AutoRestTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
 
     def test_11_delete_post(self):  # check cascade
-        request, response = app.test_client.delete('/topic/1/post/12', data=json.dumps({}))
+        request, response = app.test_client.delete(
+            f'/topic/{CREATED_TOPIC_ID}/post/{CREATED_POST_ID}', data=json.dumps({})
+        )
         self.assertEqual(response.status, 200)
 
     def test_12_delete_topic(self):  # check cascade
-        request, response = app.test_client.delete('/topic/15', data=json.dumps({}))
+        request, response = app.test_client.delete(f'/topic/{CREATED_TOPIC_ID}', data=json.dumps({}))
         self.assertEqual(response.status, 200)
 
     def test_13_search_post(self):
