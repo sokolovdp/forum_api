@@ -1,6 +1,7 @@
 import json
 import unittest
 import random
+from sanic.log import logger
 
 from forum import app
 
@@ -17,7 +18,7 @@ class AutoRestTests(unittest.TestCase):
     def setUp(self):
         pass
 
-    def test_create_topic(self):
+    def test_01_create_topic(self):
         global CREATED_TOPIC_ID
 
         data = {
@@ -28,9 +29,9 @@ class AutoRestTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         CREATED_TOPIC_ID = int(data['id'])
-        print(f'created topic id = {CREATED_TOPIC_ID}')
+        logger.info(f'created topic id = {CREATED_TOPIC_ID}')
 
-    def test_create_post(self):
+    def test_02_create_post(self):
         global CREATED_POST_ID
 
         data = {
@@ -41,9 +42,9 @@ class AutoRestTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         CREATED_POST_ID = int(data['id'])
-        print(f'created post id = {CREATED_POST_ID}')
+        logger.info(f'created post id = {CREATED_POST_ID}')
 
-    def test_create_comment(self):
+    def test_03_create_comment(self):
         global CREATED_COMMENT_ID
 
         data = {
@@ -56,9 +57,9 @@ class AutoRestTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         CREATED_COMMENT_ID = int(data['id'])
-        print(f'created comment id = {CREATED_COMMENT_ID}')
+        logger.info(f'created comment id = {CREATED_COMMENT_ID}')
 
-    def test_create_comment_for_comment(self):
+    def test_04_create_comment_for_comment(self):
         data = {
             "text": f"comment for comment {CREATED_COMMENT_ID}",
             "comment_id": CREATED_COMMENT_ID,
@@ -68,34 +69,34 @@ class AutoRestTests(unittest.TestCase):
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
-        print(f'created comment for comment id = {int(data["id"])}')
+        logger.info(f'created comment for comment id = {int(data["id"])}')
 
-    def test_get_list_of_topics(self):
+    def test_05_get_list_of_topics(self):
         request, response = app.test_client.get('/topic/0')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertTrue(data.get('topics') is not None)
 
-    def test_get_list_of_posts(self):
+    def test_06_get_list_of_posts(self):
         request, response = app.test_client.get('/topic/1/post/0')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertTrue(data.get('posts') is not None)
 
-    def test_get_one_topic(self):
+    def test_07_get_one_topic(self):
         request, response = app.test_client.get('/topic/1')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertEqual(len(data['topics']), 1)
 
-    def test_get_one_post(self):
+    def test_08_get_one_post(self):
         request, response = app.test_client.get('/topic/1/post/2')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertTrue(data.get('post') is not None)
         self.assertTrue(data.get('comments') is not None)
 
-    def test_update_topic(self):
+    def test_09_update_topic(self):
         data = {
             "subject": f"topic modified",
             "description": f"topic modified"
@@ -103,7 +104,7 @@ class AutoRestTests(unittest.TestCase):
         request, response = app.test_client.put('/topic/1', data=json.dumps(data))
         self.assertEqual(response.status, 200)
 
-    def test_update_post(self):
+    def test_10_update_post(self):
         data = {
             "subject": f"post modified",
             "description": f"post modified"
@@ -111,21 +112,21 @@ class AutoRestTests(unittest.TestCase):
         request, response = app.test_client.put('/topic/1/post/2', data=json.dumps(data))
         self.assertEqual(response.status, 200)
 
-    def test_delete_post(self):  # check cascade
+    def test_11_delete_post(self):  # check cascade
         request, response = app.test_client.delete('/topic/1/post/12', data=json.dumps({}))
         self.assertEqual(response.status, 200)
 
-    def test_delete_topic(self):  # check cascade
+    def test_12_delete_topic(self):  # check cascade
         request, response = app.test_client.delete('/topic/15', data=json.dumps({}))
         self.assertEqual(response.status, 200)
 
-    def test_search_post(self):
+    def test_13_search_post(self):
         request, response = app.test_client.get('/search?posts=modified')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
         self.assertTrue(len(data) > 0)
 
-    def test_search_topic(self):
+    def test_14_search_topic(self):
         request, response = app.test_client.get('/search?topics=modified')
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
