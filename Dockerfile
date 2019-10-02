@@ -4,4 +4,4 @@ RUN mkdir /forum
 WORKDIR /forum
 ADD requirements.txt /forum/
 RUN pip install -r requirements.txt
-ADD . /django-docker/
+ADD . /forum/
