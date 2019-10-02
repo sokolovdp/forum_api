@@ -12,7 +12,7 @@ services:
       - DATABASE_URL=postgresql://postgres:@db/postgres
     build: .
     command: >
-      bash -c "python3 init_db.py && python3 forum.py"
+      bash -c "python3 init_db.py && python3 tests.py && python3 forum.py"
     volumes:
       - .:/forum
     ports:
