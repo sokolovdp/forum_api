@@ -12,4 +12,4 @@ def test_index_patch_not_allowed():
 
 
 test_index_returns_200()
-# test_index_patch_not_allowed()
+test_index_patch_not_allowed()
