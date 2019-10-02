@@ -30,7 +30,7 @@ def row2dict(row: dict, keys: list) -> dict:
 
 def cut_keys(dict_list: dict) -> dict:
     """ Remove from key 'table.field' name of the table"""
-    return {key.split('.')[1]: value for key, value in dict_list.items()}
+    return {key.split('.', 1)[1]: value for key, value in dict_list.items()}
 
 
 class AsyncTopicView(HTTPMethodView):
