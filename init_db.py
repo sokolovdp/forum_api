@@ -41,4 +41,4 @@ if __name__ == '__main__':
         },
     ]
     db_connection.execute(query, values)
-    print('\nforum api tables created')
+    print('\nforum api tables created\n')
