@@ -47,13 +47,6 @@ comments = Table(
     Column('comment_id', Integer, ForeignKey('comments.id', ondelete="CASCADE"), nullable=True),
 )
 
-tables_map = {
-    'posts': posts,
-    'topics': topics,
-    'comments': comments,
-    'users': users
-}
-
 
 def setup_database(app: Sanic):
     db_url = os.environ.get('DATABASE_URL')

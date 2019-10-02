@@ -4,7 +4,8 @@ from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json
 
-from tables import topics, posts, comments, tables_map  # users,
+import tables
+from tables import topics, posts, comments  # users,
 
 
 def get_pagination_args(request) -> tuple:
@@ -206,7 +207,7 @@ async def search_subject(request):
         pattern = request.args.get(table_name)
         if not pattern:
             raise ValueError(f'no search pattern')
-        table = tables_map[table_name]
+        table = getattr(tables, table_name)
         query = table.select().where(table.c.subject.ilike(f'%{pattern}%')).order_by('created')
         rows = await request.app.db.fetch_all(query)
         data = [cut_keys(row2dict(r, table.columns)) for r in rows]
