@@ -101,7 +101,7 @@ class AutoRestTests(unittest.TestCase):
 
     def test_09_update_topic(self):
         data = {
-            "subject": f"topic modified {random.randint(0, 100_000_000)}",  # must be unique
+            "subject": f"topic {N} modified {random.randint(0, 100_000_000)}",  # must be unique
             "description": f"topic modified"
         }
         request, response = app.test_client.put(f'/topic/{CREATED_TOPIC_ID}', data=json.dumps(data))
@@ -109,7 +109,7 @@ class AutoRestTests(unittest.TestCase):
 
     def test_10_update_post(self):
         data = {
-            "subject": f"post modified {random.randint(0, 100_000_000)}",  # must be unique
+            "subject": f"post {N} modified {random.randint(0, 100_000_000)}",  # must be unique
             "description": f"post modified"
         }
         request, response = app.test_client.put(
@@ -117,27 +117,28 @@ class AutoRestTests(unittest.TestCase):
         )
         self.assertEqual(response.status, 200)
 
-    def test_11_delete_post(self):  # check cascade
+    def test_11_search_post(self):
+        request, response = app.test_client.get(f'/search?posts={N}')
+        self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        self.assertTrue(len(data) > 0)
+
+    def test_12_search_topic(self):
+        request, response = app.test_client.get(f'/search?topics={N}')
+        self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        self.assertTrue(len(data) > 0)
+
+    def test_13_delete_post(self):
         request, response = app.test_client.delete(
             f'/topic/{CREATED_TOPIC_ID}/post/{CREATED_POST_ID}', data=json.dumps({})
         )
         self.assertEqual(response.status, 200)
 
-    def test_12_delete_topic(self):  # check cascade
+    def test_14_delete_topic(self):
         request, response = app.test_client.delete(f'/topic/{CREATED_TOPIC_ID}', data=json.dumps({}))
         self.assertEqual(response.status, 200)
 
-    def test_13_search_post(self):
-        request, response = app.test_client.get('/search?posts=modified')
-        self.assertEqual(response.status, 200)
-        data = json.loads(response.text)
-        self.assertTrue(len(data) > 0)
-
-    def test_14_search_topic(self):
-        request, response = app.test_client.get('/search?topics=modified')
-        self.assertEqual(response.status, 200)
-        data = json.loads(response.text)
-        self.assertTrue(len(data) > 0)
 
 
 if __name__ == '__main__':
