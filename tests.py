@@ -6,7 +6,6 @@ from sanic.log import logger
 from forum import app
 
 N = random.randint(1, 10000)
-
 CREATED_TOPIC_ID = None
 CREATED_POST_ID = None
 CREATED_COMMENT_ID = None
