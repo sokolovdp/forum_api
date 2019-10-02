@@ -4,6 +4,8 @@ import random
 
 from forum import app
 
+N = random.randint(1, 10000)
+
 
 class AutoRestTests(unittest.TestCase):
     """ Unit test cases for Forum Rest APIs  """
@@ -12,27 +14,25 @@ class AutoRestTests(unittest.TestCase):
         pass
 
     def test_create_topic(self):
-        n = random.randint(1, 10000)
         data = {
-            "subject": f"topic {n}",
-            "description": f"topic {n} description"
+            "subject": f"topic {N} subject",
+            "description": f"topic {N} description"
         }
         request, response = app.test_client.post('/topic/0', data=json.dumps(data))
         self.assertEqual(response.status, 200)
 
+
     def test_create_post(self):
-        n = random.randint(1, 10000)
         data = {
-            "subject": f"post {n}",
-            "description": f"post {n} description"
+            "subject": f"post {N} subject",
+            "description": f"post {N} description"
         }
         request, response = app.test_client.post('topic/1/post/0', data=json.dumps(data))
         self.assertEqual(response.status, 200)
 
     def test_create_comment(self):
-        n = random.randint(1, 10000)
         data = {
-            "text": f"post 1 comment {n}",
+            "text": f"post 1 comment {N}",
             "comment_id": None,
             "topic_id": 1,
             "post_id": 2
@@ -41,9 +41,8 @@ class AutoRestTests(unittest.TestCase):
         self.assertEqual(response.status, 200)
 
     def test_create_comment_for_comment(self):
-        n = random.randint(1, 10000)
         data = {
-            "text": f"comment for comment {n}",
+            "text": f"comment for comment {N}",
             "comment_id": 10,
             "topic_id": 1,
             "post_id": 2
