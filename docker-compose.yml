@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+  api:
+    build: .
+    command: python3 forum.py
+    volumes:
+      - .:/forum
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
