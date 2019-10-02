@@ -58,7 +58,7 @@ class AsyncTopicView(HTTPMethodView):
 
     async def post(self, request, topic_id):
         try:
-            query = topics.insert()
+            query = topics.insert().returning(topics.c.id)
             values = {
                 'subject': request.json.get('subject'),
                 'description': request.json.get('description'),
@@ -66,11 +66,11 @@ class AsyncTopicView(HTTPMethodView):
                 'modified': datetime.now(),
                 'user_id': get_user_id(request),
             }
-            await request.app.db.execute(query, values)
+            new_id = await request.app.db.execute(query, values)
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({})
+            return json({'id': new_id})
 
     async def put(self, request, topic_id):
         try:
@@ -86,7 +86,7 @@ class AsyncTopicView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({})
+            return json({{'id': topic_id}})
 
     async def delete(self, request, topic_id):
         try:
@@ -95,7 +95,7 @@ class AsyncTopicView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({})
+            return json({'id': topic_id})
 
 
 class AsyncPostView(HTTPMethodView):
@@ -129,7 +129,7 @@ class AsyncPostView(HTTPMethodView):
 
     async def post(self, request, topic_id, post_id):
         try:
-            query = posts.insert()
+            query = posts.insert().returning(posts.c.id)
             values = {
                 'subject': request.json.get('subject'),
                 'description': request.json.get('description'),
@@ -138,11 +138,11 @@ class AsyncPostView(HTTPMethodView):
                 'modified': datetime.now(),
                 'user_id': get_user_id(request),
             }
-            await request.app.db.execute(query, values)
+            new_id = await request.app.db.execute(query, values)
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({})
+            return json({'id': new_id})
 
     async def put(self, request, topic_id, post_id):
         try:
@@ -158,7 +158,7 @@ class AsyncPostView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({})
+            return json({'id': post_id})
 
     async def delete(self, request, topic_id, post_id):
         try:
@@ -167,12 +167,12 @@ class AsyncPostView(HTTPMethodView):
         except Exception as e:
             return json({'error': str(e)}, status=400)
         else:
-            return json({})
+            return json({'id': post_id})
 
 
 async def create_comment(request):
     try:
-        query = comments.insert()
+        query = comments.insert().returning(comments.c.id)
         values = {
             'text': request.json.get('text'),
             'comment_id': request.json.get('comment_id'),
@@ -181,11 +181,11 @@ async def create_comment(request):
             'created': datetime.now(),
             'user_id': get_user_id(request),
         }
-        await request.app.db.execute(query, values)
+        new_id = await request.app.db.execute(query, values)
     except Exception as e:
         return json({'error': str(e)}, status=400)
     else:
-        return json({})
+        return json({'id': new_id})
 
 
 async def search_subject(request):
