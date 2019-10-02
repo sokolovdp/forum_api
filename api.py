@@ -7,6 +7,8 @@ from sanic.response import json
 import tables
 from tables import topics, posts, comments  # users,
 
+MOCK_USER_ID = 1
+
 
 def get_pagination_args(request) -> tuple:
     per_page = request.args.get('per_page')
@@ -59,7 +61,7 @@ class AsyncTopicView(HTTPMethodView):
                 'description': request.json.get('description'),
                 'created': datetime.now(),
                 'modified': datetime.now(),
-                'user_id': 1,  # get from request.session.user
+                'user_id': MOCK_USER_ID,  # get from request.session.user
             }
             await request.app.db.execute(query, values)
         except Exception as e:
@@ -131,7 +133,7 @@ class AsyncPostView(HTTPMethodView):
                 'topic_id': int(topic_id),
                 'created': datetime.now(),
                 'modified': datetime.now(),
-                'user_id': 1,  # get from request.session.user
+                'user_id': MOCK_USER_ID,  # get from request.session.user
             }
             await request.app.db.execute(query, values)
         except Exception as e:
@@ -174,7 +176,7 @@ async def create_comment(request):
             'topic_id': request.json.get('topic_id'),
             'post_id': request.json.get('post_id'),
             'created': datetime.now(),
-            'user_id': 1,  # get from request.session.user
+            'user_id': MOCK_USER_ID,  # get from request.session.user
         }
         await request.app.db.execute(query, values)
     except Exception as e:
