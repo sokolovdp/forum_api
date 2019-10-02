@@ -11,7 +11,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://postgres:@db/postgres
     build: .
-    command: python3 forum.py
+    command: >
+      bash -c "python3 init_db.py && python3 forum.py"
     volumes:
       - .:/forum
     ports:

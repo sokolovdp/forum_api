@@ -29,4 +29,4 @@ if __name__ == '__main__':
             'admin': False
         },
     ]
-    db_connection.execute_many(query, values)
+    db_connection.execute(query, values)
