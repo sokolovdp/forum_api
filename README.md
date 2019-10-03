@@ -18,12 +18,9 @@ docker-compose up
 - API's urls are:
 
 `
-/topic/<topic_id>
-
-/topic/<topic_id>/post/<post_id>
-
-/comment
-
+/topic/<topic_id> ... 
+/topic/<topic_id>/post/<post_id> ... 
+/comment ... 
 /search
 `
 - no authorization is required, by default during db initialization created two users with IDs: 1 and 2
@@ -34,7 +31,6 @@ To get list of all topics or all posts in the given topic in paginating mode, pr
 
 `
 GET localhost:8000/topic/0?page=1&per_page=10
-
 GET localhost:8000/topic/1/post/0?page=2&per_page=30
 `
 
