@@ -7,7 +7,7 @@ from psycopg2.errorcodes import DUPLICATE_TABLE
 import tables
 
 if __name__ == '__main__':
-    database_url = os.getenv('DATABASE_URL')
+    database_url = os.getenv('SANIC_DATABASE_URL')
 
     print(f'creating forum api tables, database url="{database_url}" ...')
 
