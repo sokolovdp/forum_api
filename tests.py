@@ -58,7 +58,6 @@ class ForumTests(unittest.TestCase):
         }
         request, response = app.test_client.post('/comment', data=json.dumps(data))
         self.assertEqual(response.status, 200)
-        data = json.loads(response.text)
 
     def test_05_get_list_of_topics(self):
         request, response = app.test_client.get('/topic/0')
