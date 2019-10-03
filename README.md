@@ -10,13 +10,13 @@
 
 ## To run demo Forum API application
 - you need docker and docker-compose to be installed
-- download or clone repo *forum_api* from GitHub to your computer
-- in the forum_api folder run command: 
+- download or clone this repo *forum_api* from GitHub to your computer
+- in the new forum_api folder run command: 
 `
 docker-compose up
 `
 
-- forum API by default listens port *8000*, so you can access API at: *localhost:8000*
+- API by default listens port *8000*, so you can access API at: *localhost:8000*
 - API's urls are:
 
 `
