@@ -1,5 +1,3 @@
-import os
-
 from sanic import Sanic
 from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from databases import Database
@@ -49,8 +47,7 @@ comments = Table(
 
 
 def setup_database(app: Sanic):
-    db_url = os.environ.get('DATABASE_URL')
-    app.db = Database(db_url)
+    app.db = Database(app.config['DATABASE_URL'])
 
     @app.listener('after_server_start')
     async def connect_to_db(*args):
