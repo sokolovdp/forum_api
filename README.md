@@ -14,7 +14,7 @@
 docker-compose up
 `
 - during startup process application will init DB tables and run tests
-- forum api by default listens port *8000*, so you  can access api at: localhost:8000
+- forum api by default listens port *8000*, so you  can access API at: localhost:8000
 - API's urls are:
 
 `
@@ -23,8 +23,12 @@ docker-compose up
 /comment ... 
 /search
 `
-- no authorization is required, by default during db initialization created two users with IDs: 1 and 2
+- no user authorization is required, by default during DB initialization created two users with IDs: 1 and 2
 - to get list of topics or all posts in the given topic use *0* as topic_id or post_id
+`
+GET localhost:8000/topic/0 ... 
+GET localhost:8000/topic/1/post/0
+`
 
 ## Paginating mode
 To get list of all topics or all posts in the given topic in paginating mode, provide *page* and *per_page* values in the query string
