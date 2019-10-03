@@ -16,6 +16,7 @@ docker-compose up
 - during startup process application will init DB tables and run tests
 - forum api by default listens port *8000*, so you  can access api at: localhost:8000
 - API's urls are:
+
 `
 /topic/<topic_id>
 /topic/<topic_id>/post/<post_id>
@@ -27,6 +28,7 @@ docker-compose up
 
 ## Paginating mode
 To get list of all topics or all posts in the given topic in paginating mode, provide *page* and *per_page* values in the query string
+
 `
 GET localhost:8000/topic/0?page=1&per_page=10
 GET localhost:8000/topic/1/post/0?page=2&per_page=30
@@ -34,10 +36,11 @@ GET localhost:8000/topic/1/post/0?page=2&per_page=30
 
 ## To run application on the different port
 To use different port, change values in docker-compose file in two lines:
+
 `
-      - SANIC_PORT=8000
-      ...
-      - "8000:8000"
+    - SANIC_PORT=8000
+    ...
+    - "8000:8000"
 `
 ## To test Link to Postman collection with forum api tests
 https://www.getpostman.com/collections/317be8f6281d97c259f2
