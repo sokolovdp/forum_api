@@ -23,7 +23,7 @@ if __name__ == '__main__':
             print('\nforum tables already exists!\n')
             exit(0)
         else:
-            raise db_engine
+            raise db_error
 
     query = tables.users.insert()
     values = [
