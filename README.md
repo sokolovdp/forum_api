@@ -30,7 +30,7 @@ docker-compose up
 To get list of all topics or all posts in the given topic in paginating mode, provide *page* and *per_page* values in the query string
 
 `
-GET localhost:8000/topic/0?page=1&per_page=10
+GET localhost:8000/topic/0?page=1&per_page=10 ... 
 GET localhost:8000/topic/1/post/0?page=2&per_page=30
 `
 
