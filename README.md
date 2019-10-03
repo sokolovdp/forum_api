@@ -43,7 +43,7 @@ To use different port, change values in docker-compose file in two lines:
     - "8000:8000"
 `
 ## To test API in the Postman
-Import collection forum-api into Postman from this link:
+Import collection *forum-api* into Postman from this link:
 
 https://www.getpostman.com/collections/317be8f6281d97c259f2
 
