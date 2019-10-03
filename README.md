@@ -26,7 +26,10 @@ docker-compose up
 - to get list of topics or all posts in the given topic use *0* as topic_id or post_id
 
 ## Paginating mode
-To get list of all topics or all posts in the given topic in paginating mode, provide *page* and *per_page*  in the query string
+To get list of all topics or all posts in the given topic in paginating mode, provide *page* and *per_page* values in the query string
+`
+localhost:8000/topic/1/post/0?page=1&per_page=10
+`
 
 ## To run application on the different port
 To use different port, change values in docker-compose file in two lines:
