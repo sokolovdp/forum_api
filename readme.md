@@ -4,7 +4,7 @@ To start API tests on another port change port values in docker-compose file in 
 `
       - SANIC_PORT=8000
       ...
-      - 8000:8000
+      - "8000:8000"
 `
 
 ## Link to Postman collection with forum api tests
