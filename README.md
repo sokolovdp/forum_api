@@ -1,4 +1,4 @@
-# Forum API - demo implementation of the Async Rest API.
+# Forum API - demo implementation of the async Rest API.
 
 ## Used packages:
 - Python 3.7.4
@@ -7,7 +7,7 @@
 - SQLAlchemy Core - expression language
 - secure - package which implements some security improvements, by ensuring use of X-XSS-Protection, Strict-Transport-Security and other headers 
 
-## To run demo forum api application
+## To run demo Forum API application
 - download repo folder *forum_api* from GitHub to your computer
 - from folder run: 
 `
@@ -34,7 +34,7 @@ GET localhost:8000/topic/0?page=1&per_page=10 ...
 GET localhost:8000/topic/1/post/0?page=2&per_page=30
 `
 
-## To run application on the different port
+## To run API application on the different port
 To use different port, change values in docker-compose file in two lines:
 
 `
@@ -42,6 +42,8 @@ To use different port, change values in docker-compose file in two lines:
     ...
     - "8000:8000"
 `
-## To test Link to Postman collection with forum api tests
+## To test API in the Postman
+Import collection forum-api into Postman from this link:
+
 https://www.getpostman.com/collections/317be8f6281d97c259f2
 
