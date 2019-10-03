@@ -15,7 +15,7 @@
 `
 docker-compose up
 `
-- during startup process application will init DB tables and run tests
+
 - forum api by default listens port *8000*, so you can access API at: localhost:8000
 - API's urls are:
 
@@ -49,6 +49,12 @@ To use different port, change port value in the *docker-compose* file in these t
     ...
     - "8000:8000"
 `
+## Auto testing API
+During container start docker will run 3 python scripts:
+- init_db.py - to connect and initialize required DB tables
+- tests.py - to run auto tests 
+- forum.py - to start and run API 
+
 ## To test API in the Postman
 Import collection *forum-api* into Postman from this link:
 
