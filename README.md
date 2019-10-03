@@ -40,7 +40,7 @@ GET localhost:8000/topic/1/post/0?page=2&per_page=30
 `
 
 ## To run API application on the different port
-To use different port, change values in docker-compose file in two lines:
+To use different port, change port value in the *docker-compose* file in these two lines:
 
 `
     - SANIC_PORT=8000
