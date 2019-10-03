@@ -6,15 +6,17 @@
 - databases - package which uses *asyncpg* to implement an asynchronous library for PostgreSQL
 - SQLAlchemy Core - expression language
 - secure - package which implements some security improvements, by ensuring use of X-XSS-Protection, Strict-Transport-Security and other headers 
+- Docker and docker-compose
 
 ## To run demo Forum API application
+- you need docker and docker-compose to be installed
 - download repo folder *forum_api* from GitHub to your computer
-- from folder run: 
+- from the form_api folder run: 
 `
 docker-compose up
 `
 - during startup process application will init DB tables and run tests
-- forum api by default listens port *8000*, so you  can access API at: localhost:8000
+- forum api by default listens port *8000*, so you can access API at: localhost:8000
 - API's urls are:
 
 `
