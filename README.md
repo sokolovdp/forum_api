@@ -11,12 +11,12 @@
 ## To run demo Forum API application
 - you need docker and docker-compose to be installed
 - download repo folder *forum_api* from GitHub to your computer
-- from the form_api folder run: 
+- from the forum_api folder run: 
 `
 docker-compose up
 `
 
-- forum api by default listens port *8000*, so you can access API at: localhost:8000
+- forum API by default listens port *8000*, so you can access API at: localhost:8000
 - API's urls are:
 
 `
@@ -59,4 +59,6 @@ During container start docker will run 3 python scripts:
 Import collection *forum-api* into Postman from this link:
 
 https://www.getpostman.com/collections/317be8f6281d97c259f2
+
+You can run them all at once in Collection runner, or play one by one with different data
 
