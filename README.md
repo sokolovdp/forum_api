@@ -3,20 +3,20 @@
 ## Used packages:
 - Python 3.7.4
 - Sanic - async framework
-- databases - package which uses *asyncpg* to implement fastest asynchronous library for PostgreSQL  (see https://github.com/MagicStack/asyncpg )
-- SQLAlchemy Core - expression language
+- databases - package which uses *asyncpg* to implement fast asynchronous library for PostgreSQL  (see https://github.com/MagicStack/asyncpg )
+- SQLAlchemyCore - expression language
 - secure - package which implements some security improvements, by ensuring use of X-XSS-Protection, Strict-Transport-Security and other headers 
 - Docker and docker-compose
 
 ## To run demo Forum API application
 - you need docker and docker-compose to be installed
-- download repo folder *forum_api* from GitHub to your computer
-- from the forum_api folder run: 
+- download or clone repo *forum_api* from GitHub to your computer
+- in the forum_api folder run command: 
 `
 docker-compose up
 `
 
-- forum API by default listens port *8000*, so you can access API at: localhost:8000
+- forum API by default listens port *8000*, so you can access API at: *localhost:8000*
 - API's urls are:
 
 `
@@ -51,7 +51,7 @@ To use different port, change port value in the *docker-compose* file in these t
 `
 ## Auto testing API
 During container start docker will run 3 python scripts:
-- init_db.py - to connect and initialize required DB tables
+- init_db.py - to connect DB and initialize required tables
 - tests.py - to run auto tests 
 - forum.py - to start and run API 
 
