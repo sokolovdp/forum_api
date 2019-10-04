@@ -25,7 +25,7 @@ docker-compose up
 /comment ... 
 /search
 `
-- no user authorization is required, by default during DB initialization created two users with IDs: 1 and 2
+
 - to get list of topics or all posts in the given topic use *0* as topic_id or post_id
 
 `
@@ -40,6 +40,12 @@ To get list of all topics or all posts in the given topic in paginating mode, pr
 GET localhost:8000/topic/0?page=1&per_page=10 ... 
 GET localhost:8000/topic/1/post/0?page=2&per_page=30
 `
+
+## JWT authentication 
+- no user authorization is required to access API urls 
+- during DB initialization created two users with IDs: 1 and 2
+- there is demo option to get JWT token by login and password at */auth* url
+
 
 ## To run API application on the different port
 To use different port, change port value in the *docker-compose* file in these two lines:
