@@ -4,6 +4,7 @@ from sanic import Sanic
 from sanic.views import HTTPMethodView
 from sanic.response import json
 from sanic.log import logger
+from sanic_jwt.decorators import protected
 
 import tables
 from tables import topics, posts, comments, row2dict  # users,
@@ -30,6 +31,7 @@ def get_pagination_args(request) -> tuple:
 
 
 class AsyncTopicView(HTTPMethodView):
+    # decorators = [protected()]
 
     async def get(self, request, topic_id):
         try:
@@ -97,6 +99,7 @@ class AsyncTopicView(HTTPMethodView):
 
 
 class AsyncPostView(HTTPMethodView):
+    # decorators = [protected()]
 
     async def get(self, request, topic_id, post_id):
         try:
@@ -175,6 +178,7 @@ class AsyncPostView(HTTPMethodView):
             return json({'id': post_id})
 
 
+# @protected()
 async def create_comment(request):
     try:
         query = comments.insert().returning(comments.c.id)
@@ -195,6 +199,7 @@ async def create_comment(request):
         return json({'id': new_id})
 
 
+# @protected()
 async def search_subject(request):
     try:
         args = list(request.args.keys())
