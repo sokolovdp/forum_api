@@ -20,8 +20,10 @@ async def authenticate(request: Request, *args, **kwargs):
 
     user = row2dict(row, users.columns)
     if password != user['password']:
+        logger.info('authentication attempt with invalid password for login %s', login)
         raise exceptions.AuthenticationFailed("user password is incorrect.")
 
+    logger.info('successful authentication for login %s', login)
     return user
 
 
