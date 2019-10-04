@@ -93,7 +93,7 @@ class ForumTests(unittest.TestCase):
     def test_09_update_topic(self):
         data = {
             "subject": f"topic {self.__class__.N} modified {random.randint(0, 100_000_000)}",  # unique
-            "description": f"topic modified"
+            "description": "topic modified"
         }
         request, response = app.test_client.put(
             f'/topic/{self.__class__.CREATED_TOPIC_ID}', data=json.dumps(data)
@@ -103,7 +103,7 @@ class ForumTests(unittest.TestCase):
     def test_10_update_post(self):
         data = {
             "subject": f"post {self.__class__.N} modified {random.randint(0, 100_000_000)}",  # unique
-            "description": f"post modified"
+            "description": "post modified"
         }
         request, response = app.test_client.put(
             f'/topic/{self.__class__.CREATED_TOPIC_ID}/post/{self.__class__.CREATED_POST_ID}',
