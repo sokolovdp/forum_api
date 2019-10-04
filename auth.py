@@ -9,6 +9,11 @@ from sanic.log import logger
 from tables import users, row2dict
 
 
+def hash_password(password):
+    salted = password + JwtConfiguration.secret
+    return hashlib.sha512(salted.encode("utf8")).hexdigest()
+
+
 async def authenticate(request: Request, *args, **kwargs):
     login = request.json.get('login', None)
     password = request.json.get('password', None)
@@ -55,8 +60,3 @@ def setup_jwt(app: Sanic):
         authenticate=authenticate,
         retrieve_user=retrieve_user
     )
-
-
-def hash_password(password):
-    salted = password + JwtConfiguration.secret
-    return hashlib.sha512(salted.encode("utf8")).hexdigest()
