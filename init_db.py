@@ -5,6 +5,7 @@ from sqlalchemy.exc import DBAPIError
 from psycopg2.errorcodes import DUPLICATE_TABLE
 
 import tables
+from auth import hash_password
 
 if __name__ == '__main__':
     database_url = os.getenv('SANIC_DATABASE_URL')
@@ -29,13 +30,13 @@ if __name__ == '__main__':
     values = [
         {
             'login': 'admin',
-            'password': 'admin',
+            'password': hash_password('admin'),
             'email': 'admin@mail.ru',
             'admin': True
         },
         {
             'login': 'user',
-            'password': 'user',
+            'password': hash_password('user'),
             'email': 'user@mail.ru',
             'admin': False
         },

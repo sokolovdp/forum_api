@@ -1,3 +1,5 @@
+import hashlib
+
 from sanic import Sanic
 from sanic.request import Request
 from sanic_jwt import Initialize, Configuration, exceptions
@@ -53,3 +55,8 @@ def setup_jwt(app: Sanic):
         authenticate=authenticate,
         retrieve_user=retrieve_user
     )
+
+
+def hash_password(password):
+    salted = password + JwtConfiguration.secret
+    return hashlib.sha512(salted.encode("utf8")).hexdigest()
