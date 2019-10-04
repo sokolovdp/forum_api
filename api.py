@@ -6,7 +6,7 @@ from sanic.response import json
 from sanic.log import logger
 
 import tables
-from tables import topics, posts, comments  # users,
+from tables import topics, posts, comments, row2dict  # users,
 
 
 def get_user_id(request):
@@ -27,15 +27,6 @@ def get_pagination_args(request) -> tuple:
         return None, None
 
     return per_page, per_page * (page - 1)
-
-
-def row2dict(row: dict, keys: list) -> dict:
-    """ Convert row object into dict with str keys, by striping table name"""
-
-    def strip_table_name_from_key(key) -> str:
-        return str(key).split('.', 1)[1]
-
-    return {strip_table_name_from_key(key): row.get(key) for key in keys}
 
 
 class AsyncTopicView(HTTPMethodView):

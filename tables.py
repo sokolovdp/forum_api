@@ -46,6 +46,15 @@ comments = Table(
 )
 
 
+def row2dict(row: dict, keys: list) -> dict:
+    """ Convert row object into dict with str keys, by striping table name"""
+
+    def strip_table_name_from_key(key) -> str:
+        return str(key).split('.', 1)[1]
+
+    return {strip_table_name_from_key(key): row.get(key) for key in keys}
+
+
 def setup_database(app: Sanic):
     app.db = Database(app.config['DATABASE_URL'])
 
