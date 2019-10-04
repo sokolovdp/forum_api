@@ -11,6 +11,7 @@ class ForumTests(unittest.TestCase):
     CREATED_TOPIC_ID = None
     CREATED_POST_ID = None
     CREATED_COMMENT_ID = None
+    JWT_TOKEN = None
 
     def setUp(self):
         pass
@@ -132,6 +133,18 @@ class ForumTests(unittest.TestCase):
     def test_14_delete_topic(self):
         request, response = app.test_client.delete(f'/topic/{self.__class__.CREATED_TOPIC_ID}')
         self.assertEqual(response.status, 200)
+
+    def test_15_get_jwt_token(self):
+        data = {
+            "login": "admin",
+            "password": "admin",
+        }
+        request, response = app.test_client.post('/auth', data=json.dumps(data))
+        self.assertEqual(response.status, 200)
+        data = json.loads(response.text)
+        jwt_token = data.get('jwt')
+        self.assertTrue(jwt_token is not None)
+        self.__class__.JWT_TOKEN = jwt_token
 
 
 if __name__ == '__main__':
