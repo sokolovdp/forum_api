@@ -21,7 +21,7 @@ async def authenticate(request: Request, *args, **kwargs):
         raise exceptions.AuthenticationFailed(f"user with login {login} not found")
 
     user = row2dict(row, users.columns)
-    if password != user['password']:
+    if hash_password(password) != user['password']:
         logger.info('authentication attempt with invalid password for login %s', login)
         raise exceptions.AuthenticationFailed("user password is incorrect.")
 

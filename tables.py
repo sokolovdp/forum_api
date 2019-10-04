@@ -7,9 +7,9 @@ metadata = MetaData()
 users = Table(
     'users', metadata,
     Column('id', Integer, primary_key=True),
-    Column('login', String(50), unique=True, nullable=False),
-    Column('password', String(50), nullable=False),
-    Column('email', String(50), unique=True, nullable=False),
+    Column('login', String(80), unique=True, nullable=False),
+    Column('password', String(258), nullable=False),
+    Column('email', String(80), unique=True, nullable=False),
     Column('admin', Boolean, nullable=False),
 )
 
