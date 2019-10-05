@@ -1,5 +1,5 @@
 from sanic import Sanic
-from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
+from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean, sql
 from databases import Database
 
 metadata = MetaData()

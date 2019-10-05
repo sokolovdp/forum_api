@@ -7,7 +7,7 @@ from sanic.log import logger
 from sanic_jwt.decorators import protected
 
 import tables
-from tables import topics, posts, comments, row2dict  # users,
+from tables import topics, posts, comments, row2dict, sql  # users,
 
 
 def get_user_id(request):
@@ -107,6 +107,10 @@ class AsyncPostView(HTTPMethodView):
             post_id = int(post_id)
             data = {'post': None, 'comments': []}
             if post_id:
+                # query = sql.select(posts.columns + comments.columns).select_from(
+                #     posts.outerjoin(comments, comments.c.post_id == post_id)
+                # ).where(posts.c.id == post_id)
+                # rows = await request.app.db.fetch_all(query)
                 query = posts.select().where(posts.c.id == post_id)
                 row = await request.app.db.fetch_one(query)
                 if row:
