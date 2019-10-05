@@ -112,10 +112,11 @@ class AsyncPostView(HTTPMethodView):
                     posts.outerjoin(comments, comments.c.post_id == post_id)
                 ).where(posts.c.id == post_id)
                 rows = await request.app.db.fetch_all(query)
-                data['post'] = row2dict(rows[0], posts.columns)
-                result = [row2dict(r, comments.columns) for r in rows]
-                if result[0]['id'] is not None:
-                    data['comments'] = result
+                if rows:
+                    data['post'] = row2dict(rows[0], posts.columns)
+                    result = [row2dict(r, comments.columns) for r in rows]
+                    if result[0]['id'] is not None:
+                        data['comments'] = result
             else:
                 per_page, offset = get_pagination_args(request)
                 query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
