@@ -5,9 +5,10 @@ from sanic.views import HTTPMethodView
 from sanic.response import json
 from sanic.log import logger
 from sanic_jwt.decorators import protected
+from sqlalchemy import sql
 
 import tables
-from tables import topics, posts, comments, row2dict, sql  # users,
+from tables import topics, posts, comments, row2dict  # users,
 
 
 def get_user_id(request):
