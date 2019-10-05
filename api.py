@@ -107,19 +107,14 @@ class AsyncPostView(HTTPMethodView):
             post_id = int(post_id)
             data = {'post': None, 'comments': []}
             if post_id:
-                # query = sql.select(posts.columns + comments.columns).select_from(
-                #     posts.outerjoin(comments, comments.c.post_id == post_id)
-                # ).where(posts.c.id == post_id)
-                # rows = await request.app.db.fetch_all(query)
-                query = posts.select().where(posts.c.id == post_id)
-                row = await request.app.db.fetch_one(query)
-                if row:
-                    post_data = row2dict(row, posts.columns)
-                    data['post'] = post_data
-                    query = comments.select().where(comments.c.post_id == post_id)
-                    rows = await request.app.db.fetch_all(query)
-                    if rows:
-                        data['comments'] = [row2dict(r, comments.columns) for r in rows]
+                query = sql.select(posts.columns + comments.columns).select_from(
+                    posts.outerjoin(comments, comments.c.post_id == post_id)
+                ).where(posts.c.id == post_id)
+                rows = await request.app.db.fetch_all(query)
+                data['post'] = row2dict(rows[0], posts.columns)
+                result = [row2dict(r, comments.columns) for r in rows]
+                if result[0]['id'] is not None:
+                    data['comments'] = result
             else:
                 per_page, offset = get_pagination_args(request)
                 query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
