@@ -43,7 +43,7 @@ GET localhost:8000/topic/1/post/0?page=2&per_page=30
 
 ## JWT authentication 
 - no user authorization is required to access API urls 
-- during DB initialization created two users admin/admin and user/usee 
+- during DB initialization created two users admin/admin and user/user 
 with IDs: 1 and 2
 - there is demo option to get JWT token by login and password at */auth* url
 
