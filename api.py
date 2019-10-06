@@ -10,6 +10,8 @@ from sqlalchemy import sql
 import tables
 from tables import topics, posts, comments, row2dict  # users,
 
+API_ERROR = 400
+
 
 def get_user_id(request):
     """ Mock function to mimic getting user id from request.session"""
@@ -48,7 +50,7 @@ class AsyncTopicView(HTTPMethodView):
                 rows = await request.app.db.fetch_all(query)
         except Exception as e:
             logger.error('get topic(s) error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             return json({'topics': [row2dict(r, topics.columns) for r in rows]})
 
@@ -65,7 +67,7 @@ class AsyncTopicView(HTTPMethodView):
             new_id = await request.app.db.execute(query, values)
         except Exception as e:
             logger.error('create topic error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             logger.info('created new topic id=%s', new_id)
             return json({'id': new_id})
@@ -83,7 +85,7 @@ class AsyncTopicView(HTTPMethodView):
             await request.app.db.execute(query, values)
         except Exception as e:
             logger.error('update topic error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             logger.info('updated topic id=%s', topic_id)
             return json({'id': topic_id})
@@ -94,7 +96,7 @@ class AsyncTopicView(HTTPMethodView):
             await request.app.db.execute(query)
         except Exception as e:
             logger.error('delete topic error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             return json({'id': topic_id})
 
@@ -126,7 +128,7 @@ class AsyncPostView(HTTPMethodView):
                 data = {'posts': [row2dict(r, posts.columns) for r in rows]}
         except Exception as e:
             logger.error('list post(s) error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             return json(data)
 
@@ -144,7 +146,7 @@ class AsyncPostView(HTTPMethodView):
             new_id = await request.app.db.execute(query, values)
         except Exception as e:
             logger.error('create post error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             logger.info('created post id=%s', new_id)
             return json({'id': new_id})
@@ -162,7 +164,7 @@ class AsyncPostView(HTTPMethodView):
             await request.app.db.execute(query, values)
         except Exception as e:
             logger.error('update post error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             logger.info('updated post id=%s', post_id)
             return json({'id': post_id})
@@ -173,7 +175,7 @@ class AsyncPostView(HTTPMethodView):
             await request.app.db.execute(query)
         except Exception as e:
             logger.error('delete post error=%s', str(e))
-            return json({'error': str(e)}, status=400)
+            return json({'error': str(e)}, status=API_ERROR)
         else:
             logger.info('deleted post id=%s', post_id)
             return json({'id': post_id})
@@ -194,7 +196,7 @@ async def create_comment(request):
         new_id = await request.app.db.execute(query, values)
     except Exception as e:
         logger.error('create comment error=%s', str(e))
-        return json({'error': str(e)}, status=400)
+        return json({'error': str(e)}, status=API_ERROR)
     else:
         logger.info('created comment id=%s', new_id)
         return json({'id': new_id})
@@ -215,7 +217,7 @@ async def search_subject(request):
         rows = await request.app.db.fetch_all(query)
     except Exception as e:
         logger.error('search error=%s', str(e))
-        return json({'error': str(e)}, status=400)
+        return json({'error': str(e)}, status=API_ERROR)
     else:
         return json([row2dict(r, table.columns) for r in rows])
 
