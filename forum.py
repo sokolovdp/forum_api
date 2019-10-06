@@ -12,4 +12,4 @@ setup_middleware(app)
 setup_jwt(app)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=app.config['PORT'], debug=True, access_log=True, auto_reload=False)
+    app.run(host="0.0.0.0", port=app.config['PORT'], debug=True, auto_reload=False)
