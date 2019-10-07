@@ -7,7 +7,7 @@ from forum import app
 
 class ForumTests(unittest.TestCase):
     """ Unit test cases for Forum Rest APIs  """
-    N = random.randint(1, 10000)
+    N = random.randint(1, 100000)
     CREATED_TOPIC_ID = None
     CREATED_POST_ID = None
     CREATED_COMMENT_ID = None
