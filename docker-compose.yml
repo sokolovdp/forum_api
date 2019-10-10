@@ -1,25 +1,24 @@
-version: '3'
+version: '3.5'
 
 services:
   db:
     container_name: forum_postgres
     restart: always
     environment:
-      - POSTGRES_PASSWORD=${PWD}
-      - POSTGRES_USER=${USER}
+      - POSTGRES_PASSWORD=postgres
     image: postgres
   api:
     container_name: forum_api
     restart: always
     environment:
-      - SANIC_DATABASE_URL=postgresql://${USER}:${PWD}@db/postgres
-      - SANIC_PORT=${PORT}
+      - SANIC_DATABASE_URL=postgresql://postgres:postgres@db/postgres
+      - SANIC_PORT=8000
     build: .
     command: >
       bash -c "python3 init_db.py && python3 tests.py && python3 forum.py"
     volumes:
       - .:/forum
     ports:
-      - ${PORT}:${PORT}
+      - 8000:8000
     depends_on:
       - db
