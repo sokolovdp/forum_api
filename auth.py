@@ -3,10 +3,10 @@ import hashlib
 from sanic import Sanic
 from sanic.request import Request
 from sanic_jwt import Initialize, Configuration, exceptions
-
 from sanic.log import logger
 
 from tables import users, row2dict
+import forum_config
 
 
 def hash_password(password):
@@ -35,12 +35,12 @@ async def authenticate(request: Request, *args, **kwargs):
 
 
 class JwtConfiguration(Configuration):
-    auth_mode = True
-    debug = True
-    strict_slashes = False
-    access_token_name = 'jwt'
-    secret = 'jwt hash string should be provided from the env'
-    user_id = 'id'
+    auth_mode = forum_config.AUTH_MODE
+    debug = forum_config.DEBUG
+    strict_slashes = forum_config.STRICT_SLASHES
+    secret = forum_config.SECRET
+    access_token_name = forum_config.ACCESS_TOKEN_NAME
+    user_id = 'id'  # defined in tables
 
 
 async def retrieve_user(request, payload, *args, **kwargs):
