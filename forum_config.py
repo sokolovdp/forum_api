@@ -1,10 +1,10 @@
 import os
 
-# Sanic parameters
+# Sanic app parameters
 STRICT_SLASHES = False
 LOAD_ENV = True
 
-# Sanic Run parameters
+# Sanic run parameters
 HOST = "0.0.0.0"
 DEBUG = True
 AUTO_RELOAD = False
