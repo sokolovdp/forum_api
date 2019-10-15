@@ -1,6 +1,7 @@
 import json
 import unittest
 import random
+import forum_config
 
 from forum import app
 
@@ -142,7 +143,7 @@ class ForumTests(unittest.TestCase):
         request, response = app.test_client.post('/auth', data=json.dumps(data))
         self.assertEqual(response.status, 200)
         data = json.loads(response.text)
-        jwt_token = data.get('jwt')
+        jwt_token = data.get(forum_config.ACCESS_TOKEN_NAME)
         self.assertTrue(jwt_token is not None)
         self.__class__.JWT_TOKEN = jwt_token
 
