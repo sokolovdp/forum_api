@@ -1,3 +1,5 @@
+import os
+
 # Sanic parameters
 STRICT_SLASHES = False
 LOAD_ENV = True
@@ -10,5 +12,5 @@ WORKERS = 1
 
 # Sanic JWT parameters
 AUTH_MODE = True
-SECRET = 'jwt hash string should be provided from the env'
+SECRET = os.getenv('SANIC_JWT_SECRET', 'very_secret_string')
 ACCESS_TOKEN_NAME = 'JWT'
