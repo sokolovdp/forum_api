@@ -5,6 +5,7 @@ services:
     container_name: forum_postgres
     restart: always
     environment:
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     image: postgres
   api:
