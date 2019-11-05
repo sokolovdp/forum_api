@@ -3,9 +3,9 @@
 ## Used packages:
 - Python 3.7.4
 - Sanic - async framework
-- databases - package which uses *asyncpg* to implement fast asynchronous library for PostgreSQL  (see https://github.com/MagicStack/asyncpg )
+- databases - package, which uses *asyncpg* to implement fast asynchronous library for PostgreSQL  (see https://github.com/MagicStack/asyncpg )
 - SQLAlchemyCore - expression language
-- secure - package which implements some security improvements, by ensuring use of X-XSS-Protection, Strict-Transport-Security and other headers 
+- secure - package, which implements some security improvements, by ensuring use of X-XSS-Protection, Strict-Transport-Security and other headers 
 - Docker and docker-compose
 
 ## To run demo Forum API application
