@@ -60,3 +60,11 @@ def setup_jwt(app: Sanic):
         authenticate=authenticate,
         retrieve_user=retrieve_user
     )
+
+
+INITIAL_ADMIN_DATA = {
+    'login': forum_config.ADMIN_LOGIN,
+    'password': hash_password(forum_config.ADMIN_PASSWORD),
+    'email': forum_config.ADMIN_EMAIL,
+    'admin': True
+}

@@ -14,3 +14,8 @@ WORKERS = 1
 AUTH_MODE = True
 SECRET = os.getenv('SANIC_JWT_SECRET', 'very_secret_string')
 ACCESS_TOKEN_NAME = 'JWT'
+
+# Admin User data
+ADMIN_LOGIN = os.getenv('ADMIN_NAME', 'admin')
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin')
+ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')

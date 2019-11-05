@@ -5,7 +5,8 @@ from sqlalchemy.exc import DBAPIError
 from psycopg2.errorcodes import DUPLICATE_TABLE
 
 import tables
-from auth import hash_password
+import auth
+
 
 if __name__ == '__main__':
     database_url = os.getenv('SANIC_DATABASE_URL')
@@ -27,19 +28,6 @@ if __name__ == '__main__':
             raise db_error
 
     query = tables.users.insert()
-    values = [
-        {
-            'login': 'admin',
-            'password': hash_password('admin'),
-            'email': 'admin@mail.ru',
-            'admin': True
-        },
-        {
-            'login': 'user',
-            'password': hash_password('user'),
-            'email': 'user@mail.ru',
-            'admin': False
-        },
-    ]
-    db_connection.execute(query, values)
-    print('\nforum api tables created\n')
+    db_connection.execute(query, auth.INITIAL_ADMIN_DATA)
+
+    print('\nforum api tables, and admin user created\n')
