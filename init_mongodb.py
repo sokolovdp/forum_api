@@ -5,10 +5,10 @@ import tables
 import auth
 
 if __name__ == '__main__':
-    mongo_url = os.getenv('SANIC_DATABASE_URL')
-    mongo_client = pymongo.MongoClient(mongo_url)
+    mongodb_url = os.getenv('SANIC_DATABASE_URL')
+    mongo_client = pymongo.MongoClient(mongodb_url)
 
-    print(f'creating forum api collections, mongodb url="{mongo_url}" ...')
+    print(f'creating forum api collections, mongodb url="{mongodb_url}" ...')
 
     mdb = mongo_client['forum_db']  # create forum database
     for col in (tables.Users, tables.Topics, tables.Posts, tables.Comments):  # create collections
