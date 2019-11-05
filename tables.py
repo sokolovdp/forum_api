@@ -1,6 +1,7 @@
 from sanic import Sanic
 from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from databases import Database
+from sanic_motor import BaseModel
 
 metadata = MetaData()
 
@@ -65,3 +66,23 @@ def setup_database(app: Sanic):
     @app.listener('after_server_stop')
     async def disconnect_from_db(*args):
         await app.db.disconnect()
+
+
+class Users(BaseModel):
+    __coll__ = 'users'
+    __unique_fields__ = ['login', 'password', 'email', 'admin']
+
+
+class Topics(BaseModel):
+    __coll__ = 'topics'
+    __unique_fields__ = ['subject', 'description', 'created', 'modified', 'user_id']
+
+
+class Posts(BaseModel):
+    __coll__ = 'posts'
+    __unique_fields__ = ['subject', 'description', 'created', 'modified', 'topic_id', 'user_id']
+
+
+class Comments(BaseModel):
+    __coll__ = 'comments'
+    __unique_fields__ = ['text', 'created', 'modified', 'user_id', 'topic_id', 'post_id', 'comment_id']
