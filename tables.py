@@ -94,9 +94,12 @@ def doc2dict(collection, doc):
     return result_dict
 
 
+MONGO_DB_NAME = 'forum_db'
+
+
 def setup_mongodb(app: Sanic):
     motor_settings = {
-        'MOTOR_URI': app.config['DATABASE_URL'] + '/forum_db',
+        'MOTOR_URI': app.config['DATABASE_URL'] + '/' + MONGO_DB_NAME,
         'LOGO': None,
     }
     app.config.update(motor_settings)
@@ -104,7 +107,7 @@ def setup_mongodb(app: Sanic):
 
     @app.listener('before_server_start')
     async def connect_to_db(*args):
-        app.db = AsyncIOMotorClient(app.config['DATABASE_URL'])['forum_db']
+        app.db = AsyncIOMotorClient(app.config['DATABASE_URL'])[MONGO_DB_NAME]
 
     @app.listener('after_server_stop')
     async def disconnect_from_db(*args):
