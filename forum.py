@@ -1,6 +1,6 @@
 from sanic import Sanic
 
-from tables import setup_database
+from tables import setup_database, setup_mongodb
 from middlewares import setup_middleware
 from api import setup_routes
 from auth import setup_jwt
@@ -8,7 +8,10 @@ import forum_config
 
 app = Sanic('forum_api', load_env=forum_config.LOAD_ENV, strict_slashes=forum_config.STRICT_SLASHES)
 app.config.from_object(forum_config)
-setup_database(app)
+
+# setup_database(app)
+setup_mongodb(app)
+
 setup_routes(app)
 setup_middleware(app)
 setup_jwt(app)

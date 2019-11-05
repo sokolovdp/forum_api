@@ -1,7 +1,7 @@
 from sanic import Sanic
 from sqlalchemy import MetaData, Table, Column, Integer, String, Text, DateTime, ForeignKey, Boolean
 from databases import Database
-from sanic_motor import BaseModel
+from sanic_motor import BaseModel, AsyncIOMotorClient
 
 metadata = MetaData()
 
@@ -86,3 +86,27 @@ class Posts(BaseModel):
 class Comments(BaseModel):
     __coll__ = 'comments'
     __unique_fields__ = ['text', 'created', 'modified', 'user_id', 'topic_id', 'post_id', 'comment_id']
+
+
+def doc2dict(collection, doc):
+    result_dict = {key: str(getattr(doc, key)) for key in collection.__unique_fields__}
+    result_dict['id'] = str(doc._id)
+    return result_dict
+
+
+def setup_mongodb(app: Sanic):
+    motor_settings = {
+        'MOTOR_URI': app.config['DATABASE_URL'] + '/forum_db',
+        'LOGO': None,
+    }
+    app.config.update(motor_settings)
+    BaseModel.init_app(app)
+
+    @app.listener('before_server_start')
+    async def connect_to_db(*args):
+        app.db = AsyncIOMotorClient(app.config['DATABASE_URL'])['forum_db']
+
+    @app.listener('after_server_stop')
+    async def disconnect_from_db(*args):
+        pass
+

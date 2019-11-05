@@ -15,6 +15,8 @@ if __name__ == '__main__':
         _ = mdb[col.__coll__]
 
     mdb.users.create_index([('login', pymongo.ASCENDING), ], unique=True)
+    mdb.topics.create_index([('subject', pymongo.ASCENDING), ], unique=True)
+    mdb.posts.create_index([('subject', pymongo.ASCENDING), ], unique=True)
 
     try:
         mdb.users.insert_one(auth.INITIAL_ADMIN_DATA)

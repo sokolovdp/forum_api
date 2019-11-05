@@ -19,3 +19,5 @@ ACCESS_TOKEN_NAME = 'JWT'
 ADMIN_LOGIN = os.getenv('ADMIN_NAME', 'admin')
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'admin')
 ADMIN_EMAIL = os.getenv('ADMIN_EMAIL')
+
+API_ERROR = 400

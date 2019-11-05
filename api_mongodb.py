@@ -7,14 +7,16 @@ from sanic_jwt.decorators import protected
 
 
 import tables
-from tables import Topics, Posts, Comments  # Users,
+from tables import Topics, Posts, Comments, Users, doc2dict
 
-API_ERROR = 400
+from forum_config import API_ERROR
 
 
-def get_user_id(request):
+async def get_user_id(request):
     """ Mock function to mimic getting user id from request.session"""
-    return 1
+    users = await Users.find()
+    user = users.objects[0]
+    return user._id
 
 
 def get_pagination_args(request) -> tuple:
@@ -37,36 +39,39 @@ class AsyncTopicView(HTTPMethodView):
 
     async def get(self, request, topic_id):
         try:
-            if topic_id:
+            if topic_id != '0':
                 topic = await Topics.find_one(topic_id)
                 topics = [topic, ]
             else:
                 per_page, offset = get_pagination_args(request)
-                topics = await Topics.find(sort='created')
+                curr = await Topics.find(sort='created')
+                topics = curr.objects
                 if per_page:  # todo handle paginating
                     pass
         except Exception as e:
             logger.error('get topic(s) error=%s', str(e))
             return json({'error': str(e)}, status=API_ERROR)
         else:
-            return json({'topics': topics})
+            topics_list = [doc2dict(Topics, topic) for topic in topics]
+            return json({'topics': topics_list})
 
     async def post(self, request, topic_id):
         try:
+            user_id = await get_user_id(request)
             values = {
                 'subject': request.json.get('subject'),
                 'description': request.json.get('description'),
                 'created': datetime.now(),
                 'modified': datetime.now(),
-                'user_id': get_user_id(request),
+                'user_id': user_id,
             }
-            new_id = await Topics.insert_one(values)
+            new_topic = await Topics.insert_one(values)
         except Exception as e:
             logger.error('create topic error=%s', str(e))
             return json({'error': str(e)}, status=API_ERROR)
         else:
-            logger.info('created new topic id=%s', new_id)
-            return json({'id': new_id})
+            logger.info('created new topic id=%s', new_topic.inserted_id)
+            return json({'id': str(new_topic.inserted_id)})
 
     async def put(self, request, topic_id):
         try:

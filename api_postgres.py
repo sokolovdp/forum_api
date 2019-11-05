@@ -8,8 +8,7 @@ from sqlalchemy import sql
 
 import tables
 from tables import topics, posts, comments, row2dict  # users,
-
-API_ERROR = 400
+from forum_config import API_ERROR
 
 
 def get_user_id(request):
