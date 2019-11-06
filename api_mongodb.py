@@ -44,8 +44,8 @@ class AsyncTopicView(HTTPMethodView):
                 topics = [topic, ]
             else:
                 per_page, offset = get_pagination_args(request)
-                curr = await Topics.find(sort='created')
-                topics = curr.objects
+                query = await Topics.find(sort='created')
+                topics = query.objects
                 if per_page:  # todo handle paginating
                     pass
         except Exception as e:
@@ -110,52 +110,51 @@ class AsyncTopicView(HTTPMethodView):
 class AsyncPostView(HTTPMethodView):
     # decorators = [protected()]
 
-    # async def get(self, request, topic_id, post_id):
-    #     try:
-    #         topic_id = int(topic_id)
-    #         post_id = int(post_id)
-    #         data = {'post': None, 'comments': []}
-    #         if post_id:
-    #             query = sql.select(posts.columns + comments.columns).select_from(
-    #                 posts.outerjoin(comments, comments.c.post_id == post_id)
-    #             ).where(posts.c.id == post_id)
-    #             rows = await request.app.db.fetch_all(query)
-    #             if rows:
-    #                 data['post'] = row2dict(rows[0], posts.columns)
-    #                 result = [row2dict(r, comments.columns) for r in rows]
-    #                 if result[0]['id'] is not None:
-    #                     data['comments'] = result
-    #         else:
-    #             per_page, offset = get_pagination_args(request)
-    #             query = posts.select().where(posts.c.topic_id == topic_id).order_by('created')
-    #             if per_page:
-    #                 query = query.limit(per_page).offset(offset)
-    #             rows = await request.app.db.fetch_all(query)
-    #             data = {'posts': [row2dict(r, posts.columns) for r in rows]}
-    #     except Exception as e:
-    #         logger.error('list post(s) error=%s', str(e))
-    #         return json({'error': str(e)}, status=API_ERROR)
-    #     else:
-    #         return json(data)
-    #
-    # async def post(self, request, topic_id, post_id):
-    #     try:
-    #         query = posts.insert().returning(posts.c.id)
-    #         values = {
-    #             'subject': request.json.get('subject'),
-    #             'description': request.json.get('description'),
-    #             'topic_id': int(topic_id),
-    #             'created': datetime.now(),
-    #             'modified': datetime.now(),
-    #             'user_id': get_user_id(request),
-    #         }
-    #         new_id = await request.app.db.execute(query, values)
-    #     except Exception as e:
-    #         logger.error('create post error=%s', str(e))
-    #         return json({'error': str(e)}, status=API_ERROR)
-    #     else:
-    #         logger.info('created post id=%s', new_id)
-    #         return json({'id': new_id})
+    async def get(self, request, topic_id, post_id):
+        try:
+            if post_id != '0':
+                data = {'post': None, 'comments': []}
+                query = await Posts.find_one(post_id)
+                if query and query.objects:
+                    data['post'] = doc2dict(Posts, query.objects[0])
+                    query2 = await Comments.find(
+                        filter={'topic_id': topic_id, 'post_id': post_id},
+                        sort='created'
+                    )
+                    if query2 and query2.objects:
+                        comments = query2.objects
+                        data['comments'] = [doc2dict(Comments, com) for com in comments]
+                    data['post'] = [query.objects[0]] if query.objects else []
+            else:
+                per_page, offset = get_pagination_args(request)
+                query = await Posts.find(filter={'topic_id': topic_id}, sort='created')
+                if per_page:
+                    pass
+                data = {'posts': [doc2dict(Posts, post) for post in query.objects]}
+        except Exception as e:
+            logger.error('list post(s) error=%s', str(e))
+            return json({'error': str(e)}, status=API_ERROR)
+        else:
+            return json(data)
+
+    async def post(self, request, topic_id, post_id):
+        try:
+            user_id = await get_user_id(request)
+            values = {
+                'subject': request.json.get('subject'),
+                'description': request.json.get('description'),
+                'topic_id': topic_id,
+                'created': datetime.now(),
+                'modified': datetime.now(),
+                'user_id': user_id,
+            }
+            new_post = await Posts.insert_one(values)
+        except Exception as e:
+            logger.error('create post error=%s', str(e))
+            return json({'error': str(e)}, status=API_ERROR)
+        else:
+            logger.info('created post id=%s', str(new_post.inserted_id))
+            return json({'id': str(new_post.inserted_id)})
     #
     # async def put(self, request, topic_id, post_id):
     #     try:
@@ -185,28 +184,27 @@ class AsyncPostView(HTTPMethodView):
     #     else:
     #         logger.info('deleted post id=%s', post_id)
     #         return json({'id': post_id})
-    pass
+
 
 # @protected()
 async def create_comment(request):
-    # try:
-    #     query = comments.insert().returning(comments.c.id)
-    #     values = {
-    #         'text': request.json.get('text'),
-    #         'comment_id': request.json.get('comment_id'),
-    #         'topic_id': request.json.get('topic_id'),
-    #         'post_id': request.json.get('post_id'),
-    #         'created': datetime.now(),
-    #         'user_id': get_user_id(request),
-    #     }
-    #     new_id = await request.app.db.execute(query, values)
-    # except Exception as e:
-    #     logger.error('create comment error=%s', str(e))
-    #     return json({'error': str(e)}, status=API_ERROR)
-    # else:
-    #     logger.info('created comment id=%s', new_id)
-    #     return json({'id': new_id})
-    pass
+    try:
+        user_id = await get_user_id(request)
+        values = {
+            'text': request.json.get('text'),
+            'comment_id': request.json.get('comment_id'),
+            'topic_id': request.json.get('topic_id'),
+            'post_id': request.json.get('post_id'),
+            'created': datetime.now(),
+            'user_id': user_id,
+        }
+        new_comment = await Comments.insert_one(values)
+    except Exception as e:
+        logger.error('create comment error=%s', str(e))
+        return json({'error': str(e)}, status=API_ERROR)
+    else:
+        logger.info('created comment id=%s', str(new_comment.inserted_id))
+        return json({'id': str(new_comment.inserted_id)})
 
 
 # @protected()
