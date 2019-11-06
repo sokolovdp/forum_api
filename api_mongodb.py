@@ -218,7 +218,7 @@ async def search_subject(request):
         if not pattern:
             raise ValueError(f'no search pattern')
         collection = getattr(tables, table_name.capitalize())
-        query = await collection.find(filter={'subject': f'/{pattern}/'}, sort='created')
+        query = await collection.find(filter={'subject': f'/{pattern}/'}, sort='created')  # todo proper search !!!
         data = [doc2dict(collection, obj) for obj in query.objects]
     except Exception as e:
         logger.error('search error=%s', str(e))
