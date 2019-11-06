@@ -114,17 +114,14 @@ class AsyncPostView(HTTPMethodView):
         try:
             if post_id != '0':
                 data = {'post': None, 'comments': []}
-                query = await Posts.find_one(post_id)
-                if query and query.objects:
-                    data['post'] = doc2dict(Posts, query.objects[0])
+                post = await Posts.find_one(post_id)
+                if post:
+                    data['post'] = doc2dict(Posts, post)
                     query2 = await Comments.find(
                         filter={'topic_id': topic_id, 'post_id': post_id},
                         sort='created'
                     )
-                    if query2 and query2.objects:
-                        comments = query2.objects
-                        data['comments'] = [doc2dict(Comments, com) for com in comments]
-                    data['post'] = [query.objects[0]] if query.objects else []
+                    data['comments'] = [doc2dict(Comments, com) for com in query2.objects]
             else:
                 per_page, offset = get_pagination_args(request)
                 query = await Posts.find(filter={'topic_id': topic_id}, sort='created')
