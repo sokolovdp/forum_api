@@ -209,20 +209,20 @@ async def create_comment(request):
 
 # @protected()
 async def search_subject(request):
-    # try:
-    #     args = list(request.args.keys())
-    #     if not args or args[0] not in ('posts', 'topics'):
-    #         raise ValueError('invalid table name, allowed names are: "posts" & "topics"')
-    #     table_name = args[0]
-    #     pattern = request.args.get(table_name)
-    #     if not pattern:
-    #         raise ValueError(f'no search pattern')
-    #     table = getattr(tables, table_name)
-    #     query = table.select().where(table.c.subject.ilike(f'%{pattern}%')).order_by('created')
-    #     rows = await request.app.db.fetch_all(query)
-    # except Exception as e:
-    #     logger.error('search error=%s', str(e))
-    #     return json({'error': str(e)}, status=API_ERROR)
-    # else:
-    #     return json([row2dict(r, table.columns) for r in rows])
-    pass
+    try:
+        args = list(request.args.keys())
+        if not args or args[0] not in ('posts', 'topics'):
+            raise ValueError('invalid table name, allowed names are: "posts" & "topics"')
+        table_name = args[0]
+        pattern = request.args.get(table_name)
+        if not pattern:
+            raise ValueError(f'no search pattern')
+        collection = getattr(tables, table_name.capitalize())
+        query = await collection.find(filter={'subject': f'/{pattern}/'}, sort='created')
+        data = [doc2dict(collection, obj) for obj in query.objects]
+    except Exception as e:
+        logger.error('search error=%s', str(e))
+        return json({'error': str(e)}, status=API_ERROR)
+    else:
+        return json(data)
+
