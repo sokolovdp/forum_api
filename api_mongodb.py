@@ -16,7 +16,7 @@ async def get_user_id(request):
     """ Mock function to mimic getting user id from request.session"""
     users = await Users.find()
     user = users.objects[0]
-    return user._id
+    return str(user._id)
 
 
 def get_pagination_args(request) -> tuple:
