@@ -152,25 +152,28 @@ class AsyncPostView(HTTPMethodView):
         else:
             logger.info('created post id=%s', str(new_post.inserted_id))
             return json({'id': str(new_post.inserted_id)})
-    #
-    # async def put(self, request, topic_id, post_id):
-    #     try:
-    #         query = posts.update().where(posts.c.id == int(post_id))
-    #         values = {'modified': datetime.now(), }
-    #         descr = request.json.get('description')
-    #         subj = request.json.get('subject')
-    #         if descr:
-    #             values['description'] = descr
-    #         if subj:
-    #             values['subject'] = subj
-    #         await request.app.db.execute(query, values)
-    #     except Exception as e:
-    #         logger.error('update post error=%s', str(e))
-    #         return json({'error': str(e)}, status=API_ERROR)
-    #     else:
-    #         logger.info('updated post id=%s', post_id)
-    #         return json({'id': post_id})
-    #
+
+    async def put(self, request, topic_id, post_id):
+        try:
+            post = await Posts.find_one(post_id)
+            if not post:
+                return json({'error': f'invalid post_id: {post_id}'}, status=API_ERROR)
+            values = {'modified': datetime.now(), }
+            descr = request.json.get('description')
+            subj = request.json.get('subject')
+            if descr:
+                values['description'] = descr
+            if subj:
+                values['subject'] = subj
+            post.clean_for_dirty(values)
+            await Posts.update_one({'_id': post.id}, {'$set': values})
+        except Exception as e:
+            logger.error('update post error=%s', str(e))
+            return json({'error': str(e)}, status=API_ERROR)
+        else:
+            logger.info('updated post id=%s', post_id)
+            return json({'id': post_id})
+
     # async def delete(self, request, topic_id, post_id):
     #     try:
     #         query = posts.delete().where(posts.c.id == int(post_id))
