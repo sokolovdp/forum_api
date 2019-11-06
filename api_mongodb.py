@@ -97,9 +97,8 @@ class AsyncTopicView(HTTPMethodView):
     async def delete(self, request, topic_id):
         try:
             topic = await Topics.find_one(topic_id)
-            if not topic:
-                return json({'error': f'invalid topic_id: {topic_id}'}, status=API_ERROR)
-            await topic.destroy()
+            if topic:
+                await topic.destroy()
         except Exception as e:
             logger.error('delete topic error=%s', str(e))
             return json({'error': str(e)}, status=API_ERROR)
@@ -174,16 +173,17 @@ class AsyncPostView(HTTPMethodView):
             logger.info('updated post id=%s', post_id)
             return json({'id': post_id})
 
-    # async def delete(self, request, topic_id, post_id):
-    #     try:
-    #         query = posts.delete().where(posts.c.id == int(post_id))
-    #         await request.app.db.execute(query)
-    #     except Exception as e:
-    #         logger.error('delete post error=%s', str(e))
-    #         return json({'error': str(e)}, status=API_ERROR)
-    #     else:
-    #         logger.info('deleted post id=%s', post_id)
-    #         return json({'id': post_id})
+    async def delete(self, request, topic_id, post_id):
+        try:
+            post = await Posts.find_one(post_id)
+            if post:
+                await post.destroy()
+        except Exception as e:
+            logger.error('delete post error=%s', str(e))
+            return json({'error': str(e)}, status=API_ERROR)
+        else:
+            logger.info('deleted post id=%s', post_id)
+            return json({'id': post_id})
 
 
 # @protected()
