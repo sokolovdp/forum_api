@@ -1,7 +1,10 @@
 from sanic import Sanic
+import forum_config
 
-# from api_postgres import AsyncPostView, AsyncTopicView, create_comment, search_subject
-from api_mongodb import AsyncPostView, AsyncTopicView, create_comment, search_subject
+if forum_config.DATABASE_TYPE == 'postgres':
+    from api_postgres import AsyncPostView, AsyncTopicView, create_comment, search_subject
+else:
+    from api_mongodb import AsyncPostView, AsyncTopicView, create_comment, search_subject
 
 
 def setup_routes(app: Sanic):
