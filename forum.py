@@ -9,8 +9,10 @@ import forum_config
 app = Sanic('forum_api', load_env=forum_config.LOAD_ENV, strict_slashes=forum_config.STRICT_SLASHES)
 app.config.from_object(forum_config)
 
-# setup_database(app)
-setup_mongodb(app)
+if forum_config.DATABASE_TYPE == 'postgres':
+    setup_database(app)
+else:
+    setup_mongodb(app)
 
 setup_routes(app)
 setup_middleware(app)
